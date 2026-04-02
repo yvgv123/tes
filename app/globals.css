@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+/* ─── Brand Design Tokens (Tailwind v4 @theme) ─────────────────── */
+@theme {
+  --color-brand-cyan: #00F0FF;
+  --color-brand-dark: #131313;
+  --color-brand-light-cyan: #22D3EE;
+  --color-brand-stone: #E5E2E1;
+  --color-brand-matte: #121212;
+
+  --font-space: "Space Grotesk", sans-serif;
+}
+
+/* ─── Base Styles ──────────────────────────────────────────────── */
+html, body {
+  background-color: #121212;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Project Dossier Stack */
+#project-stack {
+  overflow: visible !important;
+}
+
+#card-explore-btn:hover {
+  background: #e879f9 !important;
+}
