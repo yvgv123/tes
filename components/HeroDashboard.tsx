@@ -5,14 +5,14 @@ export default function HeroDashboard() {
     <main
       id="dashboard"
       className="w-full max-w-[95%] lg:max-w-[1600px] mx-auto"
-      style={{ height: '100vh', paddingTop: '72px', paddingLeft: '60px', paddingRight: '60px', paddingBottom: '20px', boxSizing: 'border-box' }}
+      style={{ minHeight: '100svh', paddingTop: '80px', paddingLeft: 'clamp(16px, 4vw, 60px)', paddingRight: 'clamp(16px, 4vw, 60px)', paddingBottom: '20px', boxSizing: 'border-box' }}
     >
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch w-full h-full">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch w-full h-full" style={{ minHeight: 'calc(100svh - 100px)' }}>
 
         {/* Card 1: System Info (Left Card) */}
-        <div className="w-full h-full lg:min-h-0 bg-gradient-to-l from-neutral-900 via-neutral-900/0 to-neutral-900/0 rounded-[10px] border border-brand-cyan/20 shadow-[0_0_30px_rgba(0,240,255,0.05)] p-4 lg:p-5 flex flex-col relative overflow-hidden group backdrop-blur-md lg:col-span-7 xl:col-span-8">
+        <div className="w-full lg:min-h-0 bg-gradient-to-l from-neutral-900 via-neutral-900/0 to-neutral-900/0 rounded-[10px] border border-brand-cyan/20 shadow-[0_0_30px_rgba(0,240,255,0.05)] p-4 lg:p-5 flex flex-col relative overflow-hidden group backdrop-blur-md lg:col-span-7 xl:col-span-8 min-h-[70svh]">
 
-          {/* Halftone Portrait Background */}
+          {/* Hero Portrait Background */}
           <div className="absolute inset-0 z-0 flex items-center justify-end opacity-90 pointer-events-none mix-blend-screen overflow-hidden">
             <Image
               src="/assets/ascii-art.png"
@@ -36,27 +36,27 @@ export default function HeroDashboard() {
               <span className="text-[9px] text-brand-stone/60 tracking-[0.25em] font-space uppercase">Identity_Verified</span>
             </div>
 
-            <h1 className="text-[72px] lg:text-[90px] xl:text-[108px] font-black font-sans leading-[0.85] tracking-tighter uppercase relative w-fit">
+            <h1 className="text-[52px] sm:text-[72px] lg:text-[90px] xl:text-[108px] font-black font-sans leading-[0.85] tracking-tighter uppercase relative w-fit">
               <span className="absolute -left-1 top-0 text-brand-cyan mix-blend-screen select-none">LOGIC<br />INTO ART</span>
               <span className="relative text-brand-stone select-none">LOGIC<br />INTO ART</span>
             </h1>
 
-            <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-2 mt-1">
+            <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-3 mt-1">
               <div className="flex flex-col gap-0.5">
                 <span className="text-[9px] text-brand-stone/50 tracking-[0.2em] font-space uppercase">Operator Identification</span>
-                <span className="text-lg lg:text-xl font-bold font-sans text-brand-stone uppercase tracking-wide">Galih Rangga S.</span>
+                <span className="text-base lg:text-xl font-bold font-sans text-brand-stone uppercase tracking-wide">Galih Rangga S.</span>
                 <span className="text-[8px] text-brand-stone/30 tracking-[0.2em] font-space font-light uppercase">0X7F_PROTOCOL_INITIATED</span>
               </div>
               <div className="flex flex-wrap gap-3">
-                <button className="px-5 py-2.5 bg-[#E09DF8] hover:bg-[#F0ABFC] text-black transition-all text-[9px] tracking-[0.2em] uppercase font-bold shadow-[0_0_15px_rgba(224,157,248,0.2)] rounded-[2px]">View_Archives</button>
-                <button className="px-5 py-2.5 bg-transparent border border-brand-stone/20 hover:border-brand-stone/50 text-brand-stone hover:text-white transition-all text-[9px] tracking-[0.2em] uppercase font-bold backdrop-blur-sm rounded-[2px]">Establish_Link</button>
+                <button className="px-4 sm:px-5 py-2.5 bg-[#E09DF8] hover:bg-[#F0ABFC] text-black transition-all text-[9px] tracking-[0.2em] uppercase font-bold shadow-[0_0_15px_rgba(224,157,248,0.2)] rounded-[2px]">View_Archives</button>
+                <button className="px-4 sm:px-5 py-2.5 bg-transparent border border-brand-stone/20 hover:border-brand-stone/50 text-brand-stone hover:text-white transition-all text-[9px] tracking-[0.2em] uppercase font-bold backdrop-blur-sm rounded-[2px]">Establish_Link</button>
               </div>
             </div>
           </div>
         </div>
 
         {/* Right Column Wrapper */}
-        <div className="w-full flex flex-col gap-3 lg:col-span-5 xl:col-span-4 h-full">
+        <div className="w-full flex flex-col gap-3 lg:col-span-5 xl:col-span-4 lg:h-full">
 
           {/* Top Right Card: Current Node */}
           <div className="w-full flex-1 p-4 bg-[#171717]/60 rounded-[10px] shadow-[0_0_20px_rgba(235,178,255,0.05),inset_0_0_15px_rgba(0,240,255,0.10)] border border-brand-cyan/20 backdrop-blur-md flex flex-col justify-between gap-2 relative overflow-hidden group">
@@ -73,7 +73,7 @@ export default function HeroDashboard() {
               </div>
             </div>
             <div className="w-full text-brand-stone/60 text-[11px] md:text-xs font-space leading-relaxed flex-1 mt-2">
-              Combining advanced AI automation with precision UI/UX architecture. An operator who masters algorithmic tools to accelerate the creative process and build intuitive, human-centered interfaces. Operating at the rare intersection of technical systems understanding and advanced graphic design, leveraging modern AI to transform complex design challenges into seamless interactive experiences.
+              Menggabungkan otomatisasi AI tingkat lanjut dengan arsitektur UI/UX yang presisi. Seorang operator yang menguasai alat-alat algoritmik untuk mempercepat proses kreatif dan membangun antarmuka yang intuitif dan berpusat pada manusia.
             </div>
             <div className="w-full flex items-center gap-4 mt-auto">
               <div className="w-2.5 h-2.5 bg-[#22C55E] rounded-full shadow-[0_0_10px_#22C55E] animate-pulse shrink-0 relative mt-[1px]"></div>
@@ -82,7 +82,7 @@ export default function HeroDashboard() {
           </div>
 
           {/* Bottom Right Card: Technical Arsenal */}
-          <div className="w-full h-auto flex-1 lg:h-0 p-5 bg-[#171717]/60 rounded-[10px] shadow-[0_0_20px_rgba(235,178,255,0.05),inset_0_0_15px_rgba(0,240,255,0.10)] border border-brand-cyan/20 backdrop-blur-[10px] flex flex-col justify-start items-start overflow-hidden group">
+          <div className="w-full flex-1 p-5 bg-[#171717]/60 rounded-[10px] shadow-[0_0_20px_rgba(235,178,255,0.05),inset_0_0_15px_rgba(0,240,255,0.10)] border border-brand-cyan/20 backdrop-blur-[10px] flex flex-col justify-start items-start overflow-hidden group">
             <div className="w-full pb-4 flex flex-col justify-start items-start">
               <div className="w-full inline-flex justify-start items-center gap-3">
                 <div className="inline-flex flex-col justify-start items-start">
@@ -95,10 +95,10 @@ export default function HeroDashboard() {
             <div className="w-full flex-1 relative flex flex-col justify-start items-start gap-4 mt-2">
               {[
                 { label: 'INTERFACE_ENGINEERING', level: 'EXPERT' },
-                { label: 'VECTOR_&_IMAGING', level: 'ADVANCED' },
-                { label: 'NEURAL_PROMPTING', level: 'ADVANCED' },
-                { label: 'SPATIAL_DYNAMICS', level: 'PROFICIENT' },
-                { label: 'SYSTEM_ARCHITECTURE', level: 'PROFICIENT' },
+                { label: 'VECTOR_&_IMAGING',      level: 'ADVANCED' },
+                { label: 'NEURAL_PROMPTING',       level: 'ADVANCED' },
+                { label: 'SPATIAL_DYNAMICS',       level: 'PROFICIENT' },
+                { label: 'SYSTEM_ARCHITECTURE',    level: 'PROFICIENT' },
               ].map(({ label, level }) => (
                 <div key={label} className="w-full pb-3 border-b border-white/5 inline-flex justify-between items-end group/skill hover:border-[#f0abfc]/40 transition-colors cursor-default">
                   <div className="text-brand-stone/60 group-hover/skill:text-brand-stone transition-colors text-[10px] md:text-[11px] font-space uppercase">{label}</div>

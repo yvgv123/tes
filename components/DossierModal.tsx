@@ -54,6 +54,15 @@ export default function DossierModal({ isOpen, project, onClose }: DossierModalP
         className="w-[848px] h-auto md:h-[566.8px] max-w-full bg-neutral-700/40 outline outline-1 outline-offset-[-1px] outline-cyan-400/20 backdrop-blur-[10px] flex flex-col justify-start items-start transform overflow-hidden lg:overflow-visible relative"
         style={{ opacity: 0 }}
       >
+        {/* Mobile-only floating close button — top-right corner */}
+        <button
+          onClick={handleClose}
+          className="sm:hidden absolute top-3 right-3 z-20 p-2 bg-neutral-500/40 hover:bg-neutral-500/70 transition-colors flex justify-center items-center group cursor-pointer"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-4 h-4 text-fuchsia-300 group-hover:text-white transition-colors">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
         {/* Header Bar */}
         <div className="w-full p-4 bg-neutral-900/75 border-b border-gray-700/30 flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-0">
           <div className="flex justify-start items-center gap-3 w-full sm:w-auto">
@@ -74,7 +83,7 @@ export default function DossierModal({ isOpen, project, onClose }: DossierModalP
             </div>
           </div>
 
-          <div className="flex justify-start items-center gap-3 sm:gap-5 w-full sm:w-auto">
+          <div className="hidden sm:flex justify-start items-center gap-3 sm:gap-5 w-full sm:w-auto">
             <div className="flex justify-start items-start gap-2">
               <div className="px-2 pt-[3px] pb-1 bg-neutral-700 outline outline-1 outline-offset-[-1px] outline-sky-100/20 flex flex-col justify-start items-start">
                 <div className="text-sky-100 text-[9px] font-space leading-3 uppercase">STATUS: {project.status}</div>
@@ -83,7 +92,7 @@ export default function DossierModal({ isOpen, project, onClose }: DossierModalP
                 <div className="text-zinc-400 text-[9px] font-space leading-3 uppercase">REV: {project.rev}</div>
               </div>
             </div>
-            {/* Close Button */}
+            {/* Close Button — desktop only (mobile close is absolute top-right) */}
             <button
               onClick={handleClose}
               className="p-2 bg-neutral-500/30 hover:bg-neutral-500/50 transition-colors flex flex-col justify-center items-center group cursor-pointer"

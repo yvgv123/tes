@@ -29,7 +29,7 @@ export const projectsData: Project[] = [
   {
     id: "ARCHIVE_FILE_02",
     title: "Bukan<br>Boneka Biasa!",
-    customTitleCss: "color:#fff;font-size:48px;font-weight:700;font-family:'Space Grotesk',sans-serif;line-height:48px;text-transform:uppercase;white-space:nowrap;",
+    customTitleCss: "color:#fff;font-weight:700;font-family:'Space Grotesk',sans-serif;text-transform:uppercase;",
     desc: "Revealing the Mystical Charm of Nini Thowong in Bantul, Yogyakarta",
     image: "/assets/nini_thowong.png",
     customImgCss: "position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:1;",
@@ -50,7 +50,7 @@ export const projectsData: Project[] = [
   {
     id: "ARCHIVE_FILE_04",
     title: "Crimson<br>Gaze Limbata",
-    customTitleCss: "color:#fff;font-size:48px;font-weight:700;font-family:'Space Grotesk',sans-serif;line-height:48px;text-transform:uppercase;white-space:nowrap;",
+    customTitleCss: "color:#fff;font-weight:700;font-family:'Space Grotesk',sans-serif;text-transform:uppercase;",
     desc: "vector image asset of a bogo fish or channa limbata from Indonesia",
     image: "/assets/limbata.png",
     customImgCss: "position:absolute;left:0;top:0;width:100%;height:100%;object-fit:contain;object-position:center;z-index:1;",
@@ -62,7 +62,7 @@ export const projectsData: Project[] = [
   {
     id: "ARCHIVE_FILE_05",
     title: "A Casual<br>Self-Portrait",
-    customTitleCss: "color:#fff;font-size:48px;font-weight:700;font-family:'Space Grotesk',sans-serif;line-height:48px;text-transform:uppercase;white-space:nowrap;",
+    customTitleCss: "color:#fff;font-weight:700;font-family:'Space Grotesk',sans-serif;text-transform:uppercase;",
     desc: "This is a stylized, casual vector self-portrait of myself.",
     image: "/assets/casual_portrait.png",
     customImgCss: "position:absolute;left:0;top:0;width:100%;height:100%;object-fit:contain;object-position:center;z-index:1;",
@@ -74,7 +74,7 @@ export const projectsData: Project[] = [
   {
     id: "ARCHIVE_FILE_06",
     title: "JEMPOL MENGETIK,<br>BANGSA TERUSIK",
-    customTitleCss: "color:#fff;font-size:38px;font-weight:700;font-family:'Space Grotesk',sans-serif;line-height:42px;text-transform:uppercase;white-space:nowrap;",
+    customTitleCss: "color:#fff;font-weight:700;font-family:'Space Grotesk',sans-serif;text-transform:uppercase;",
     desc: "an educational poster describing the implementation of the values contained in Pancasila",
     image: "/assets/jempol_mengetik.jpg",
     customImgCss: "position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:1;",
@@ -86,7 +86,7 @@ export const projectsData: Project[] = [
   {
     id: "ARCHIVE_FILE_07",
     title: "Peak of<br>Youth Spirit",
-    customTitleCss: "color:#fff;font-size:48px;font-weight:700;font-family:'Space Grotesk',sans-serif;line-height:48px;text-transform:uppercase;white-space:nowrap;",
+    customTitleCss: "color:#fff;font-weight:700;font-family:'Space Grotesk',sans-serif;text-transform:uppercase;",
     desc: "a poster commemorating Youth Pledge Day, October 28",
     image: "/assets/youth_spirit.jpg",
     customImgCss: "position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:1;",
@@ -98,7 +98,7 @@ export const projectsData: Project[] = [
   {
     id: "ARCHIVE_FILE_08",
     title: "Labdagati<br>Digital Library",
-    customTitleCss: "color:#fff;font-size:38px;font-weight:700;font-family:'Space Grotesk',sans-serif;line-height:42px;text-transform:uppercase;white-space:nowrap;",
+    customTitleCss: "color:#fff;font-weight:700;font-family:'Space Grotesk',sans-serif;text-transform:uppercase;",
     desc: "Warm digital library app interface design concept for competition purposes.",
     image: "/assets/labdagati_ui.png",
     customImgCss: "position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:1;",
@@ -110,7 +110,7 @@ export const projectsData: Project[] = [
   {
     id: "ARCHIVE_FILE_09",
     title: "Abstract Manual<br>Book Cover<br>Designs",
-    customTitleCss: "color:#fff;font-size:36px;font-weight:700;font-family:'Space Grotesk',sans-serif;line-height:40px;text-transform:uppercase;white-space:nowrap;",
+    customTitleCss: "color:#fff;font-weight:700;font-family:'Space Grotesk',sans-serif;text-transform:uppercase;",
     desc: "four modern abstract manual book cover design templates",
     image: "/assets/abstract_covers.png",
     customImgCss: "position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:1;",
