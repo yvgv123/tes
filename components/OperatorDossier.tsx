@@ -4,7 +4,7 @@ export default function OperatorDossier() {
   return (
     <section
       id="dossier"
-      className="w-full max-w-[95%] lg:max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-[60px] pb-20 lg:pb-32 mt-16 lg:mt-40 pt-12 lg:pt-20"
+      className="w-full max-w-[95%] lg:max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-[60px] pb-20 lg:pb-28 mt-20 lg:mt-28 pt-0"
     >
       {/* Header */}
       <div className="w-full flex items-center gap-4 mb-8 md:mb-12">

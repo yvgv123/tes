@@ -31,7 +31,16 @@ function parseCss(css: string): React.CSSProperties {
 }
 
 const DEFAULT_IMG_CSS  = 'position:absolute;left:-10%;top:5%;width:90%;height:90%;object-fit:contain;z-index:1;';
-const DEFAULT_TITLE_CSS = "color:#fff;font-size:clamp(24px,4vw,48px);font-weight:700;font-family:'Space Grotesk',sans-serif;line-height:1.1;text-transform:uppercase;";
+// Uniform title: always 22px, bold, uppercase — ignores per-project font-size overrides
+const UNIFORM_TITLE_STYLE: React.CSSProperties = {
+  color: '#fff',
+  fontSize: 22,
+  fontWeight: 700,
+  fontFamily: "'Space Grotesk', sans-serif",
+  lineHeight: 1.2,
+  textTransform: 'uppercase',
+  marginBottom: 10,
+};
 
 /* ─── Ghost tab at card top ──────────────────────────────────────── */
 function GhostTab({ offsetPct, text, borderOpacity, bgAlpha, color }: {
@@ -159,17 +168,16 @@ function FolderCard({
               </div>
             </div>
 
-            {/* RIGHT: Data panel */}
-            <div style={{ flex: 1, alignSelf: 'stretch', padding: 'clamp(20px, 4vw, 48px)', background: '#030712', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', overflow: 'hidden' }}>
+              {/* RIGHT: Data panel */}
+              <div style={{ flex: 1, alignSelf: 'stretch', padding: 'clamp(16px, 3vw, 40px)', background: '#030712', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', overflow: 'hidden' }}>
 
-              <div style={{ position: 'relative', width: '100%', flex: 1 }}>
                 {/* ID + Lock */}
                 <motion.div
                   key={`id-${project.id}`}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.12 }}
-                  style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}
+                  style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10, flexShrink: 0 }}
                 >
                   <span style={{ color: '#67e8f9', fontSize: 11, fontFamily: "'Space Grotesk',sans-serif", letterSpacing: '0.05em' }}>
                     ID: {project.id}
@@ -180,13 +188,13 @@ function FolderCard({
                   </svg>
                 </motion.div>
 
-                {/* Title */}
+                {/* Title — uniform size across all cards */}
                 <motion.div
                   key={`title-${project.id}`}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.17, duration: 0.4, ease: 'easeOut' }}
-                  style={{ ...parseCss(project.customTitleCss || DEFAULT_TITLE_CSS), marginBottom: 12 }}
+                  style={UNIFORM_TITLE_STYLE}
                   dangerouslySetInnerHTML={{ __html: project.title }}
                 />
 
@@ -196,34 +204,36 @@ function FolderCard({
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.24, duration: 0.4 }}
-                  style={{ color: 'rgba(255,255,255,0.8)', fontSize: 'clamp(11px,1.2vw,14px)', fontFamily: "'Inter',sans-serif", lineHeight: '1.7', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical' }}
+                  style={{ color: 'rgba(255,255,255,0.7)', fontSize: 12, fontFamily: "'Inter',sans-serif", lineHeight: 1.6, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', flexShrink: 0 }}
                 >
                   {project.desc}
                 </motion.div>
-              </div>
 
-              {/* CTA button */}
-              <div style={{ paddingTop: 16 }}>
-                <motion.button
-                  id="card-explore-btn"
-                  onClick={() => onOpenModal(project)}
-                  whileHover={{ scale: 1.03, boxShadow: '0 0 28px rgba(240,171,252,0.75)', backgroundColor: '#e879f9' }}
-                  whileTap={{ scale: 0.97 }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-                  style={{ padding: 'clamp(10px,2vw,16px) clamp(16px,3vw,32px)', background: '#f0abfc', border: 'none', cursor: 'pointer', display: 'inline-flex', justifyContent: 'center', alignItems: 'center' }}
-                >
-                  <span style={{ color: '#0f766e', fontSize: 'clamp(9px,1vw,12px)', fontWeight: 700, fontFamily: "'Space Grotesk',sans-serif", letterSpacing: '0.05em', textAlign: 'center' }}>
-                    EXPLORE_ARCHIVE
-                  </span>
-                </motion.button>
+                {/* Spacer */}
+                <div style={{ flex: 1 }} />
+
+                {/* CTA button — flexShrink:0 prevents clipping */}
+                <div style={{ paddingTop: 12, flexShrink: 0 }}>
+                  <motion.button
+                    id="card-explore-btn"
+                    onClick={() => onOpenModal(project)}
+                    whileHover={{ scale: 1.03, boxShadow: '0 0 28px rgba(240,171,252,0.75)', backgroundColor: '#e879f9' }}
+                    whileTap={{ scale: 0.97 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                    style={{ padding: '10px 24px', background: '#f0abfc', border: 'none', cursor: 'pointer', display: 'inline-flex', justifyContent: 'center', alignItems: 'center', flexShrink: 0 }}
+                  >
+                    <span style={{ color: '#0f766e', fontSize: 11, fontWeight: 700, fontFamily: "'Space Grotesk',sans-serif", letterSpacing: '0.05em', textAlign: 'center', whiteSpace: 'nowrap' }}>
+                      EXPLORE_ARCHIVE
+                    </span>
+                  </motion.button>
+                </div>
               </div>
             </div>
-          </div>
-        </>
-      )}
-    </motion.div>
-  );
-}
+          </>
+        )}
+      </motion.div>
+    );
+  }
 
 /* ─── Main exported component ────────────────────────────────────── */
 export default function FolderStack({ onOpenModal }: { onOpenModal: (p: Project) => void }) {
@@ -244,7 +254,7 @@ export default function FolderStack({ onOpenModal }: { onOpenModal: (p: Project)
   return (
     <section
       id="projects"
-      className="w-full max-w-[95%] lg:max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-[60px] pb-20 lg:pb-32 mt-16 lg:mt-40 pt-12 lg:pt-16 relative flex flex-col items-center"
+      className="w-full max-w-[95%] lg:max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-[60px] pb-20 lg:pb-28 mt-0 lg:mt-4 pt-0 relative flex flex-col items-center"
     >
       {/* Section header */}
       <div className="w-full flex items-center justify-center gap-4 mb-12 md:mb-20">
@@ -255,9 +265,33 @@ export default function FolderStack({ onOpenModal }: { onOpenModal: (p: Project)
         </h2>
       </div>
 
-      {/* Card stack — capped width on desktop, aspect-ratio scaling on mobile */}
+      {/* Card stack */}
       <div className="relative w-full max-w-[90vw] sm:max-w-[680px] mx-auto">
-        <div style={{ paddingTop: '62%', position: 'relative', overflow: 'visible' }}>
+        {/* Fixed height on mobile, aspect-ratio on sm+ */}
+        <div
+          className="relative sm:hidden"
+          style={{ height: '360px', overflow: 'visible' }}
+        >
+          <div className="absolute inset-0" style={{ overflow: 'visible' }}>
+            <AnimatePresence initial={true} custom={exitX}>
+              {visible.map((project, index) => (
+                <FolderCard
+                  key={project.id}
+                  project={project}
+                  index={index}
+                  tabText={project.id}
+                  exitX={exitX}
+                  onSwipe={handleSwipe}
+                  onOpenModal={onOpenModal}
+                />
+              ))}
+            </AnimatePresence>
+          </div>
+        </div>
+        <div
+          className="relative hidden sm:block"
+          style={{ paddingTop: '62%', overflow: 'visible' }}
+        >
           <div className="absolute inset-0" style={{ overflow: 'visible' }}>
             <AnimatePresence initial={true} custom={exitX}>
               {visible.map((project, index) => (
