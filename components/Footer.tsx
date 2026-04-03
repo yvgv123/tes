@@ -30,7 +30,7 @@ export default function Footer() {
 
             {/* LinkedIn */}
             <a
-              href="https://linkedin.com"
+              href="https://www.linkedin.com/in/galih-rangga-36b64331a?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
               target="_blank"
               rel="noopener noreferrer"
               className="w-full sm:w-auto px-6 md:px-10 py-4 outline outline-1 outline-offset-[-1px] outline-fuchsia-300/40 hover:outline-fuchsia-300/80 hover:bg-fuchsia-300/5 flex justify-center sm:justify-start items-center gap-3 transition-all group"

@@ -1,8 +1,11 @@
 'use client';
 
 import Image from 'next/image';
+import { useOutlineColor } from '@/lib/OutlineColorContext';
 
 export default function HeroDashboard() {
+  const { outlineColor } = useOutlineColor();
+
   const scrollToProjects = () => {
     document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
@@ -20,7 +23,13 @@ export default function HeroDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch w-full h-full" style={{ minHeight: 'calc(100svh - 100px)' }}>
 
         {/* Card 1: System Info (Left Card) */}
-        <div className="w-full lg:min-h-0 bg-gradient-to-l from-neutral-900 via-neutral-900/0 to-neutral-900/0 rounded-[10px] border border-brand-cyan/20 shadow-[0_0_30px_rgba(0,240,255,0.05)] p-4 lg:p-5 flex flex-col relative overflow-hidden group backdrop-blur-md lg:col-span-7 xl:col-span-8 min-h-[70svh]">
+        <div
+          className="w-full lg:min-h-0 bg-gradient-to-l from-neutral-900 via-neutral-900/0 to-neutral-900/0 rounded-[10px] p-4 lg:p-5 flex flex-col relative overflow-hidden group backdrop-blur-md lg:col-span-7 xl:col-span-8 min-h-[70svh] transition-all duration-500"
+          style={{
+            border: `1px solid ${outlineColor}33`,
+            boxShadow: `0 0 30px ${outlineColor}0D, 0 0 60px ${outlineColor}08, inset 0 0 20px ${outlineColor}05`,
+          }}
+        >
 
           {/* Hero Portrait Background */}
           <div className="absolute inset-0 z-0 flex items-center justify-end opacity-90 pointer-events-none mix-blend-screen overflow-hidden">
@@ -79,7 +88,13 @@ export default function HeroDashboard() {
         <div className="w-full flex flex-col gap-3 lg:col-span-5 xl:col-span-4 lg:h-full">
 
           {/* Top Right Card: Current Node */}
-          <div className="w-full flex-1 p-4 bg-[#171717]/60 rounded-[10px] shadow-[0_0_20px_rgba(235,178,255,0.05),inset_0_0_15px_rgba(0,240,255,0.10)] border border-brand-cyan/20 backdrop-blur-md flex flex-col justify-between gap-2 relative overflow-hidden group">
+          <div
+            className="w-full flex-1 p-4 bg-[#171717]/60 rounded-[10px] backdrop-blur-md flex flex-col justify-between gap-2 relative overflow-hidden group transition-all duration-500"
+            style={{
+              border: `1px solid ${outlineColor}33`,
+              boxShadow: `0 0 20px rgba(235,178,255,0.05), inset 0 0 15px ${outlineColor}1A`,
+            }}
+          >
             <div className="w-full flex justify-between items-start">
               <div className="text-brand-stone text-[9px] font-space leading-[1.8] tracking-[0.15em] uppercase">
                 CURRENT_NODE : YOGYAKARTA, ID<br />
@@ -102,7 +117,13 @@ export default function HeroDashboard() {
           </div>
 
           {/* Bottom Right Card: Technical Arsenal */}
-          <div className="w-full flex-1 p-5 bg-[#171717]/60 rounded-[10px] shadow-[0_0_20px_rgba(235,178,255,0.05),inset_0_0_15px_rgba(0,240,255,0.10)] border border-brand-cyan/20 backdrop-blur-[10px] flex flex-col justify-start items-start overflow-hidden group">
+          <div
+            className="w-full flex-1 p-5 bg-[#171717]/60 rounded-[10px] backdrop-blur-[10px] flex flex-col justify-start items-start overflow-hidden group transition-all duration-500"
+            style={{
+              border: `1px solid ${outlineColor}33`,
+              boxShadow: `0 0 20px rgba(235,178,255,0.05), inset 0 0 15px ${outlineColor}1A`,
+            }}
+          >
             <div className="w-full pb-4 flex flex-col justify-start items-start">
               <div className="w-full inline-flex justify-start items-center gap-3">
                 <div className="inline-flex flex-col justify-start items-start">

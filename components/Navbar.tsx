@@ -1,10 +1,15 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { useOutlineColor } from '@/lib/OutlineColorContext';
+import ColorWheelPicker from '@/components/ColorWheelPicker';
 
 export default function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuOpen,   setMenuOpen]   = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const { outlineColor }            = useOutlineColor();
+  const pickerBtnRef                = useRef<HTMLDivElement>(null);
 
   const links = [
     { href: '#dashboard', label: 'DASHBOARD' },
@@ -15,15 +20,16 @@ export default function Navbar() {
 
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
-    setMenuOpen(false); // Close mobile menu if open
-    const targetId = href.replace(/.*\#/, "");
+    setMenuOpen(false);
+    setPickerOpen(false);
+    const targetId = href.replace(/.*\#/, '');
     const elem = document.getElementById(targetId);
-    if (elem) {
-      elem.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }
+    if (elem) elem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const togglePicker = () => {
+    setPickerOpen(v => !v);
+    setMenuOpen(false); // close hamburger menu if open
   };
 
   return (
@@ -54,12 +60,13 @@ export default function Navbar() {
           ))}
         </div>
 
-        {/* Right: hamburger (mobile) + dot (desktop) */}
-        <div className="flex items-center gap-2 flex-shrink-0">
-          {/* Mobile hamburger */}
+        {/* Right: mobile hamburger + color picker (always visible) */}
+        <div className="flex items-center gap-3 flex-shrink-0">
+
+          {/* Mobile hamburger — only shown on sm and below */}
           <button
             className="sm:hidden p-1.5 text-brand-stone/60 hover:text-brand-cyan transition-colors"
-            onClick={() => setMenuOpen(v => !v)}
+            onClick={() => { setMenuOpen(v => !v); setPickerOpen(false); }}
             aria-label="Toggle menu"
           >
             {menuOpen ? (
@@ -73,16 +80,39 @@ export default function Navbar() {
             )}
           </button>
 
-          {/* Desktop right dot */}
-          <div className="hidden sm:flex p-2 rounded-full flex-col justify-center items-center">
-            <div className="w-5 h-5 bg-cyan-400"></div>
+          {/* Color Picker Button — visible on ALL screen sizes */}
+          <div className="flex items-center relative" ref={pickerBtnRef}>
+            <button
+              id="color-picker-btn"
+              onClick={togglePicker}
+              aria-label="Open outline color picker"
+              className="flex items-center justify-center transition-all duration-200 group p-1"
+            >
+              <Image
+                src="/assets/Vector%20%283%29.svg"
+                alt="Color palette"
+                width={20}
+                height={20}
+                className="transition-all duration-200"
+                style={{
+                  filter: pickerOpen
+                    ? `drop-shadow(0 0 6px ${outlineColor}) drop-shadow(0 0 12px ${outlineColor}99) brightness(1.2)`
+                    : `drop-shadow(0 0 4px ${outlineColor}99) brightness(0.9)`,
+                }}
+              />
+            </button>
+
+            {/* Color Wheel Popup */}
+            {pickerOpen && (
+              <ColorWheelPicker onClose={() => setPickerOpen(false)} />
+            )}
           </div>
         </div>
       </nav>
 
       {/* Mobile dropdown menu */}
       {menuOpen && (
-        <div className="sm:hidden absolute top-[72px] left-4 right-4 bg-neutral-900/95 backdrop-blur-md rounded-2xl outline outline-1 outline-cyan-400/30 overflow-hidden">
+        <div className="sm:hidden absolute top-[64px] left-4 right-4 bg-neutral-900/95 backdrop-blur-md rounded-2xl outline outline-1 outline-cyan-400/30 overflow-hidden z-40">
           {links.map(({ href, label }) => (
             <a
               key={label}

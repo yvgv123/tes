@@ -1,6 +1,19 @@
+'use client';
+
 import Image from 'next/image';
+import { useOutlineColor } from '@/lib/OutlineColorContext';
 
 export default function OperatorDossier() {
+  const { outlineColor } = useOutlineColor();
+
+  // Hex → rgba helper
+  const hex2rgba = (hex: string, alpha: number) => {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r},${g},${b},${alpha})`;
+  };
+
   return (
     <section
       id="dossier"
@@ -10,7 +23,11 @@ export default function OperatorDossier() {
       <div className="w-full flex items-center gap-4 mb-8 md:mb-12">
         <span className="text-[#f0abfc] text-sm md:text-base font-space font-bold tracking-widest">02_</span>
         <h2 className="text-brand-stone text-xl md:text-3xl font-sans font-bold uppercase tracking-wider">OPERATOR_DOSSIER</h2>
-        <div className="h-px flex-1 bg-gradient-to-r from-[#f0abfc]/30 via-brand-cyan/10 to-transparent ml-2 md:ml-4"></div>
+        {/* Header divider line — color follows outlineColor */}
+        <div
+          className="h-px flex-1 ml-2 md:ml-4 transition-all duration-500"
+          style={{ background: `linear-gradient(to right, ${hex2rgba(outlineColor, 0.35)}, ${hex2rgba(outlineColor, 0.08)}, transparent)` }}
+        />
       </div>
 
       {/* Dossier Content Grid */}
@@ -23,7 +40,16 @@ export default function OperatorDossier() {
           <div className="w-full relative rounded-[10px] flex flex-col justify-start items-start self-stretch" style={{ minHeight: 'clamp(400px, 60vw, 660px)' }}>
             <div className="w-full h-full absolute top-0 left-0 opacity-20 bg-sky-100/10 rounded-full blur-[32px] pointer-events-none"></div>
 
-            <div className="w-full h-full self-stretch p-2 relative bg-neutral-900/60 rounded-[10px] shadow-[0_0_20px_0_rgba(235,178,255,0.05),inset_0_0_15px_1px_rgba(0,240,255,0.10)] outline outline-1 outline-offset-[-1px] outline-cyan-400/40 backdrop-blur-[10px] flex flex-col justify-center items-start overflow-hidden" style={{ minHeight: 'clamp(400px, 60vw, 660px)' }}>
+            {/* Main photo container — dynamic border + shadow */}
+            <div
+              className="w-full h-full self-stretch p-2 relative bg-neutral-900/60 rounded-[10px] backdrop-blur-[10px] flex flex-col justify-center items-start overflow-hidden transition-all duration-500"
+              style={{
+                minHeight: 'clamp(400px, 60vw, 660px)',
+                outline: `1px solid ${hex2rgba(outlineColor, 0.4)}`,
+                outlineOffset: '-1px',
+                boxShadow: `0 0 20px 0 rgba(235,178,255,0.05), inset 0 0 15px 1px ${hex2rgba(outlineColor, 0.10)}`,
+              }}
+            >
 
               <div className="w-full h-full absolute inset-0 opacity-80 mix-blend-screen bg-blend-saturation bg-white overflow-hidden rounded-[8px]">
                 <img
@@ -36,14 +62,23 @@ export default function OperatorDossier() {
               {/* Inner border */}
               <div className="absolute inset-[1px] md:inset-[2px] rounded-lg border border-sky-100/20 pointer-events-none z-10"></div>
 
-              {/* Corner TL */}
-              <div className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 absolute top-[6%] left-[7%] border-l-2 border-t-2 border-sky-100/60 z-20 pointer-events-none"></div>
+              {/* Corner TL — dynamic color */}
+              <div
+                className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 absolute top-[6%] left-[7%] z-20 pointer-events-none transition-all duration-500"
+                style={{ borderLeft: `2px solid ${hex2rgba(outlineColor, 0.7)}`, borderTop: `2px solid ${hex2rgba(outlineColor, 0.7)}` }}
+              />
 
-              {/* Corner BR */}
-              <div className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 absolute bottom-[10%] right-[7%] border-r-2 border-b-2 border-sky-100/60 z-20 pointer-events-none"></div>
+              {/* Corner BR — dynamic color */}
+              <div
+                className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 absolute bottom-[10%] right-[7%] z-20 pointer-events-none transition-all duration-500"
+                style={{ borderRight: `2px solid ${hex2rgba(outlineColor, 0.7)}`, borderBottom: `2px solid ${hex2rgba(outlineColor, 0.7)}` }}
+              />
 
-              {/* Horizontal scan line */}
-              <div className="w-[94%] left-[3%] top-1/2 absolute h-px bg-sky-100/30 shadow-[0_0_10px_0_#00F0FF] z-20 pointer-events-none group-hover:top-[52%] transition-all duration-1000 ease-in-out"></div>
+              {/* Horizontal scan line — dynamic glow color */}
+              <div
+                className="w-[94%] left-[3%] top-1/2 absolute h-px bg-sky-100/30 z-20 pointer-events-none group-hover:top-[52%] transition-all duration-1000 ease-in-out"
+                style={{ boxShadow: `0 0 10px 0 ${outlineColor}` }}
+              />
 
               {/* TOP SECRET stamp */}
               <img
@@ -65,11 +100,20 @@ export default function OperatorDossier() {
         {/* Right Column */}
         <div className="w-full flex-1 flex flex-col gap-6 lg:gap-8 lg:col-span-7 xl:col-span-7">
 
-          {/* Main Data Box */}
-          <div className="w-full h-auto p-5 md:p-8 relative bg-black/40 rounded-[10px] shadow-[0_0_20px_rgba(235,178,255,0.05),inset_0_0_15px_rgba(0,240,255,0.10)] border border-cyan-400/20 backdrop-blur-[10px] flex flex-col justify-start items-start gap-6 md:gap-8">
+          {/* Main Data Box — dynamic border + shadow */}
+          <div
+            className="w-full h-auto p-5 md:p-8 relative bg-black/40 rounded-[10px] backdrop-blur-[10px] flex flex-col justify-start items-start gap-6 md:gap-8 transition-all duration-500"
+            style={{
+              border: `1px solid ${hex2rgba(outlineColor, 0.20)}`,
+              boxShadow: `0 0 20px rgba(235,178,255,0.05), inset 0 0 15px ${hex2rgba(outlineColor, 0.10)}`,
+            }}
+          >
 
-            {/* Top Border Line */}
-            <div className="w-11/12 h-[2px] absolute top-0 left-4 bg-gradient-to-r from-cyan-400/30 to-transparent"></div>
+            {/* Top Border Line — dynamic gradient */}
+            <div
+              className="w-11/12 h-[2px] absolute top-0 left-4 transition-all duration-500"
+              style={{ background: `linear-gradient(to right, ${hex2rgba(outlineColor, 0.35)}, transparent)` }}
+            />
 
             {/* Origin Node */}
             <div className="w-full flex flex-col justify-start items-start gap-4">
@@ -96,10 +140,33 @@ export default function OperatorDossier() {
                   { exe: 'generative_ai_modules',  status: 'ACTIVE',  active: true },
                   { exe: 'google_antigravity.exe', status: 'ACTIVE',  active: true },
                 ].map(({ exe, status, active }) => (
-                  <div key={exe} className="w-full flex items-end justify-between gap-2 group cursor-default">
-                    <div className="text-stone-200/50 group-hover:text-stone-200 transition-colors text-[10px] md:text-xs font-space whitespace-nowrap uppercase">&gt; execute: {exe}</div>
-                    <div className={`flex-1 border-b border-dotted ${active ? 'border-brand-stone/10 group-hover:border-[#00F0FF]/40' : 'border-brand-stone/10 group-hover:border-stone-200/40'} transition-colors mb-1 mx-2`}></div>
-                    <div className={`${active ? 'text-sky-100 group-hover:text-[#00F0FF] group-hover:drop-shadow-[0_0_5px_#00F0FF]' : 'text-brand-stone/40 group-hover:text-stone-200'} transition-all text-[10px] md:text-xs font-space tracking-widest whitespace-nowrap uppercase font-bold`}>[ {status} ]</div>
+                  <div key={exe} className="w-full flex items-end justify-between gap-2 group/row cursor-default">
+                    <div className="text-stone-200/50 group-hover/row:text-stone-200 transition-colors text-[10px] md:text-xs font-space whitespace-nowrap uppercase">&gt; execute: {exe}</div>
+                    {/* Dotted separator — changes color on hover using outlineColor */}
+                    <div
+                      className="flex-1 border-b border-dotted border-brand-stone/10 mb-1 mx-2 transition-colors duration-200 group-hover/row:border-opacity-100"
+                      style={{ '--hover-color': hex2rgba(outlineColor, 0.4) } as React.CSSProperties}
+                      onMouseEnter={e => (e.currentTarget.style.borderColor = active ? hex2rgba(outlineColor, 0.4) : 'rgba(255,255,255,0.25)')}
+                      onMouseLeave={e => (e.currentTarget.style.borderColor = '')}
+                    />
+                    {/* Status badge — glow color follows outlineColor for active items */}
+                    <div
+                      className={`transition-all text-[10px] md:text-xs font-space tracking-widest whitespace-nowrap uppercase font-bold ${active ? 'text-sky-100' : 'text-brand-stone/40'}`}
+                      onMouseEnter={e => {
+                        if (active) {
+                          e.currentTarget.style.color = outlineColor;
+                          e.currentTarget.style.filter = `drop-shadow(0 0 5px ${outlineColor})`;
+                        } else {
+                          e.currentTarget.style.color = 'rgba(228,228,231,1)';
+                        }
+                      }}
+                      onMouseLeave={e => {
+                        e.currentTarget.style.color = '';
+                        e.currentTarget.style.filter = '';
+                      }}
+                    >
+                      [ {status} ]
+                    </div>
                   </div>
                 ))}
               </div>
@@ -107,8 +174,8 @@ export default function OperatorDossier() {
           </div>
 
           {/* Extract CV Button */}
-          <a 
-            href="/assets/CV kreatif_Galih Rangga Saputro.pdf" 
+          <a
+            href="/assets/CV kreatif_Galih Rangga Saputro.pdf"
             download="CV kreatif_Galih Rangga Saputro.pdf"
             className="w-full md:w-fit self-start px-8 md:px-10 py-4 bg-[#E09DF8] hover:bg-[#F0ABFC] text-black font-space font-bold uppercase tracking-[0.2em] text-[10px] md:text-[11px] transition-all rounded-[2px] shadow-[0_0_20px_rgba(224,157,248,0.2)] flex items-center justify-center gap-3 active:scale-95 group/btn"
           >
