@@ -13,6 +13,19 @@ export default function Navbar() {
     { href: '#comm_link', label: 'COMM_LINK' },
   ];
 
+  const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    setMenuOpen(false); // Close mobile menu if open
+    const targetId = href.replace(/.*\#/, "");
+    const elem = document.getElementById(targetId);
+    if (elem) {
+      elem.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
+
   return (
     <div className="fixed top-0 left-0 w-full pt-4 sm:pt-6 flex justify-center px-4 md:px-8 z-50">
       <nav className="w-full max-w-5xl px-4 md:px-8 py-3 bg-neutral-900/40 rounded-full shadow-[0px_0px_15px_0px_rgba(0,240,255,0.10)] outline outline-1 outline-offset-[-1px] outline-cyan-400/30 backdrop-blur-md flex justify-between items-center gap-4 transition-all">
@@ -32,6 +45,7 @@ export default function Navbar() {
             <div key={label} className="inline-flex flex-col justify-start items-start group">
               <a
                 href={href}
+                onClick={(e) => handleScroll(e, href)}
                 className="justify-center text-stone-200/60 group-hover:text-[#00F0FF] group-hover:drop-shadow-[0_0_8px_rgba(0,240,255,0.8)] transition-all text-[10px] md:text-xs font-normal font-['Space_Grotesk'] uppercase leading-4 tracking-wider cursor-pointer"
               >
                 {label}
@@ -73,7 +87,7 @@ export default function Navbar() {
             <a
               key={label}
               href={href}
-              onClick={() => setMenuOpen(false)}
+              onClick={(e) => handleScroll(e, href)}
               className="block px-6 py-4 text-stone-200/60 hover:text-brand-cyan hover:bg-white/5 transition-all text-[11px] font-['Space_Grotesk'] uppercase tracking-widest border-b border-white/5 last:border-b-0"
             >
               {label}

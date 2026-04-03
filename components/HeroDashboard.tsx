@@ -1,6 +1,16 @@
+'use client';
+
 import Image from 'next/image';
 
 export default function HeroDashboard() {
+  const scrollToProjects = () => {
+    document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const scrollToContact = () => {
+    document.getElementById('comm_link')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
   return (
     <main
       id="dashboard"
@@ -48,8 +58,18 @@ export default function HeroDashboard() {
                 <span className="text-[8px] text-brand-stone/30 tracking-[0.2em] font-space font-light uppercase">0X7F_PROTOCOL_INITIATED</span>
               </div>
               <div className="flex flex-wrap gap-3">
-                <button className="px-4 sm:px-5 py-2.5 bg-[#E09DF8] hover:bg-[#F0ABFC] text-black transition-all text-[9px] tracking-[0.2em] uppercase font-bold shadow-[0_0_15px_rgba(224,157,248,0.2)] rounded-[2px]">View_Archives</button>
-                <button className="px-4 sm:px-5 py-2.5 bg-transparent border border-brand-stone/20 hover:border-brand-stone/50 text-brand-stone hover:text-white transition-all text-[9px] tracking-[0.2em] uppercase font-bold backdrop-blur-sm rounded-[2px]">Establish_Link</button>
+                <button 
+                  onClick={scrollToProjects}
+                  className="px-4 sm:px-5 py-2.5 bg-[#E09DF8] hover:bg-[#F0ABFC] text-black transition-all text-[9px] tracking-[0.2em] uppercase font-bold shadow-[0_0_15px_rgba(224,157,248,0.2)] rounded-[2px]"
+                >
+                  View_Archives
+                </button>
+                <button 
+                  onClick={scrollToContact}
+                  className="px-4 sm:px-5 py-2.5 bg-transparent border border-brand-stone/20 hover:border-brand-stone/50 text-brand-stone hover:text-white transition-all text-[9px] tracking-[0.2em] uppercase font-bold backdrop-blur-sm rounded-[2px]"
+                >
+                  Establish_Link
+                </button>
               </div>
             </div>
           </div>

@@ -107,12 +107,16 @@ export default function OperatorDossier() {
           </div>
 
           {/* Extract CV Button */}
-          <button className="w-full md:w-fit self-start px-8 md:px-10 py-4 bg-[#E09DF8] hover:bg-[#F0ABFC] text-black font-space font-bold uppercase tracking-[0.2em] text-[10px] md:text-[11px] transition-all rounded-[2px] shadow-[0_0_20px_rgba(224,157,248,0.2)] flex items-center justify-center gap-3 active:scale-95 group/btn">
+          <a 
+            href="/assets/CV kreatif_Galih Rangga Saputro.pdf" 
+            download="CV kreatif_Galih Rangga Saputro.pdf"
+            className="w-full md:w-fit self-start px-8 md:px-10 py-4 bg-[#E09DF8] hover:bg-[#F0ABFC] text-black font-space font-bold uppercase tracking-[0.2em] text-[10px] md:text-[11px] transition-all rounded-[2px] shadow-[0_0_20px_rgba(224,157,248,0.2)] flex items-center justify-center gap-3 active:scale-95 group/btn"
+          >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor" className="w-4 h-4 group-hover/btn:-mt-1 transition-all">
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
             </svg>
             EXTRACT_CV_DATA
-          </button>
+          </a>
 
         </div>
       </div>
