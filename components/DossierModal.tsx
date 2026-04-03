@@ -144,11 +144,17 @@ export default function DossierModal({ isOpen, project, onClose }: DossierModalP
               <p className="text-zinc-400 text-[10px] font-sans leading-4 text-justify mt-1">{project.detailDesc}</p>
             </div>
 
-            <div className="w-full flex-1 flex flex-col justify-end items-center min-h-[50px] mt-8 md:mt-auto pt-6">
-              <button className="w-full py-2.5 sm:py-3 outline outline-1 outline-offset-[-1px] outline-sky-100/40 hover:bg-sky-100/10 transition-colors flex justify-center items-center">
-                <span className="text-sky-100 text-[10px] font-space uppercase leading-4 tracking-widest">[ VIEW_HIGH_RES ]</span>
-              </button>
-            </div>
+            {project.id === 'ARCHIVE_FILE_02' && (
+              <div className="w-full flex-1 flex flex-col justify-end items-center min-h-[50px] mt-8 md:mt-auto pt-6">
+                <a
+                  href="/assets/E-Book Nini Thowong.pdf"
+                  download="E-Book Nini Thowong.pdf"
+                  className="w-full py-2.5 sm:py-3 outline outline-1 outline-offset-[-1px] outline-sky-100/40 hover:bg-sky-100/10 transition-colors flex justify-center items-center"
+                >
+                  <span className="text-sky-100 text-[10px] font-space uppercase leading-4 tracking-widest">[ VIEW_HIGH_RES ]</span>
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </div>

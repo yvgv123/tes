@@ -120,7 +120,7 @@ export default function OperatorDossier() {
               <div className="w-full text-sky-100 text-[13px] md:text-sm font-space leading-5 tracking-wider uppercase">[ ORIGIN NODE ]</div>
               <div className="w-full flex flex-col gap-4">
                 <div className="text-stone-200/80 text-sm md:text-base font-sans leading-relaxed">
-                  <span className="font-bold">2022 – 2025 :</span> SMK Negeri 1 Pundong (Teknik Jaringan Komputer &amp; Telekomunikasi).
+                  <span className="font-bold">2022 – 2025 :</span> SMK Negeri 1 Pundong (Computer Network &amp; Telecommunication Engineering).
                 </div>
                 <div className="text-stone-200/80 text-sm md:text-base font-sans leading-relaxed">
                   <span className="font-bold">2025 – PRES :</span> Institut Seni Indonesia (ISI) Yogyakarta (D4 Desain Media). Status: Active deployment in bridging network logic with visual communications.
@@ -133,12 +133,12 @@ export default function OperatorDossier() {
               <div className="w-full text-[#f0abfc] text-[13px] md:text-sm font-space leading-5 tracking-wider uppercase mb-1 drop-shadow-[0_0_5px_rgba(240,171,252,0.3)]">[ SOFTWARE_STACK ]</div>
               <div className="w-full flex flex-col gap-4 overflow-hidden">
                 {[
-                  { exe: 'figma.exe',              status: 'ACTIVE',  active: true },
-                  { exe: 'adobe_illustrator.exe',  status: 'ACTIVE',  active: true },
-                  { exe: 'adobe_photoshop.exe',    status: 'ACTIVE',  active: true },
-                  { exe: 'coreldraw_suite.exe',    status: 'STANDBY', active: false },
-                  { exe: 'generative_ai_modules',  status: 'ACTIVE',  active: true },
-                  { exe: 'google_antigravity.exe', status: 'ACTIVE',  active: true },
+                  { exe: 'figma.exe', status: 'ACTIVE', active: true },
+                  { exe: 'adobe_illustrator.exe', status: 'ACTIVE', active: true },
+                  { exe: 'adobe_photoshop.exe', status: 'ACTIVE', active: true },
+                  { exe: 'coreldraw_suite.exe', status: 'STANDBY', active: false },
+                  { exe: 'generative_ai_modules', status: 'ACTIVE', active: true },
+                  { exe: 'google_antigravity.exe', status: 'ACTIVE', active: true },
                 ].map(({ exe, status, active }) => (
                   <div key={exe} className="w-full flex items-end justify-between gap-2 group/row cursor-default">
                     <div className="text-stone-200/50 group-hover/row:text-stone-200 transition-colors text-[10px] md:text-xs font-space whitespace-nowrap uppercase">&gt; execute: {exe}</div>

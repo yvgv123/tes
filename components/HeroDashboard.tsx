@@ -67,13 +67,13 @@ export default function HeroDashboard() {
                 <span className="text-[8px] text-brand-stone/30 tracking-[0.2em] font-space font-light uppercase">0X7F_PROTOCOL_INITIATED</span>
               </div>
               <div className="flex flex-wrap gap-3">
-                <button 
+                <button
                   onClick={scrollToProjects}
                   className="px-4 sm:px-5 py-2.5 bg-[#E09DF8] hover:bg-[#F0ABFC] text-black transition-all text-[9px] tracking-[0.2em] uppercase font-bold shadow-[0_0_15px_rgba(224,157,248,0.2)] rounded-[2px]"
                 >
                   View_Archives
                 </button>
-                <button 
+                <button
                   onClick={scrollToContact}
                   className="px-4 sm:px-5 py-2.5 bg-transparent border border-brand-stone/20 hover:border-brand-stone/50 text-brand-stone hover:text-white transition-all text-[9px] tracking-[0.2em] uppercase font-bold backdrop-blur-sm rounded-[2px]"
                 >
@@ -108,7 +108,7 @@ export default function HeroDashboard() {
               </div>
             </div>
             <div className="w-full text-brand-stone/60 text-[11px] md:text-xs font-space leading-relaxed flex-1 mt-2">
-              Menggabungkan otomatisasi AI tingkat lanjut dengan arsitektur UI/UX yang presisi. Seorang operator yang menguasai alat-alat algoritmik untuk mempercepat proses kreatif dan membangun antarmuka yang intuitif dan berpusat pada manusia.
+              Combining advanced AI automation with precision UI/UX architecture. An operator who masters algorithmic tools to accelerate the creative process and build intuitive, human-centered interfaces.
             </div>
             <div className="w-full flex items-center gap-4 mt-auto">
               <div className="w-2.5 h-2.5 bg-[#22C55E] rounded-full shadow-[0_0_10px_#22C55E] animate-pulse shrink-0 relative mt-[1px]"></div>
@@ -136,10 +136,10 @@ export default function HeroDashboard() {
             <div className="w-full flex-1 relative flex flex-col justify-start items-start gap-4 mt-2">
               {[
                 { label: 'INTERFACE_ENGINEERING', level: 'EXPERT' },
-                { label: 'VECTOR_&_IMAGING',      level: 'ADVANCED' },
-                { label: 'NEURAL_PROMPTING',       level: 'ADVANCED' },
-                { label: 'SPATIAL_DYNAMICS',       level: 'PROFICIENT' },
-                { label: 'SYSTEM_ARCHITECTURE',    level: 'PROFICIENT' },
+                { label: 'VECTOR_&_IMAGING', level: 'ADVANCED' },
+                { label: 'NEURAL_PROMPTING', level: 'ADVANCED' },
+                { label: 'SPATIAL_DYNAMICS', level: 'PROFICIENT' },
+                { label: 'SYSTEM_ARCHITECTURE', level: 'PROFICIENT' },
               ].map(({ label, level }) => (
                 <div key={label} className="w-full pb-3 border-b border-white/5 inline-flex justify-between items-end group/skill hover:border-[#f0abfc]/40 transition-colors cursor-default">
                   <div className="text-brand-stone/60 group-hover/skill:text-brand-stone transition-colors text-[10px] md:text-[11px] font-space uppercase">{label}</div>
