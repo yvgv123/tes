@@ -12,8 +12,11 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: 'Galih Rangga Saputro | Digital Fugitive OS',
-    template: '%s | Galih Rangga Saputro',
+    default: 'Portofolio Galih Rangga Saputro',
+    template: '%s | Portofolio Galih Rangga Saputro',
+  },
+  icons: {
+    icon: '/assets/G latter white.svg',
   },
   description: 'Cyberpunk-themed portfolio of Galih Rangga Saputro — Visual Designer & UI/UX Developer bridging network logic with visual communications.',
   keywords: ['Galih Rangga Saputro', 'Portfolio', 'UI/UX Design', 'Visual Designer', 'Cyberpunk', 'Next.js', 'React', 'Frontend Developer', 'ISI Yogyakarta', 'Graphic Design'],
@@ -24,7 +27,7 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'id_ID',
     url: 'https://gatrastudio.site', // Ganti dengan URL domain asli Anda
-    title: 'Galih Rangga Saputro | Digital Fugitive OS',
+    title: 'Portofolio Galih Rangga Saputro',
     description: 'Explore the cyberpunk-themed portfolio of Galih Rangga Saputro, a visual designer blending creative art with technical logic.',
     siteName: 'Digital Fugitive OS',
     images: [
@@ -38,7 +41,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Galih Rangga Saputro | Digital Fugitive OS',
+    title: 'Portofolio Galih Rangga Saputro',
     description: 'Explore the cyberpunk-themed portfolio of Galih Rangga Saputro, a visual designer blending creative art with technical logic.',
     images: ['/assets/media__1774962022927.png'],
   },
