@@ -144,7 +144,7 @@ export default function DossierModal({ isOpen, project, onClose }: DossierModalP
               <p className="text-zinc-400 text-[10px] font-sans leading-4 text-justify mt-1">{project.detailDesc}</p>
             </div>
 
-            {project.id === 'ARCHIVE_FILE_02' && (
+            {project.id === 'ARCHIVE_FILE_01' && (
               <div className="w-full flex-1 flex flex-col justify-end items-center min-h-[50px] mt-8 md:mt-auto pt-6">
                 <a
                   href="/assets/E-Book Nini Thowong.pdf"
