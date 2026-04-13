@@ -20,31 +20,34 @@ export default function OperatorDossier() {
       className="w-full max-w-[95%] lg:max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-[60px] pb-20 lg:pb-28 mt-20 lg:mt-28 pt-0"
     >
       {/* Header */}
-      <div className="w-full flex items-center gap-4 mb-8 md:mb-12">
-        <span className="text-[#f0abfc] text-sm md:text-base font-space font-bold tracking-widest">02_</span>
-        <h2 className="text-brand-stone text-xl md:text-3xl font-sans font-bold uppercase tracking-wider">OPERATOR_DOSSIER</h2>
+      <div className="w-full h-9 inline-flex justify-start items-center gap-4 mb-8 md:mb-12">
+        <div className="inline-flex flex-col justify-start items-start">
+          <span className="w-8 h-4 flex items-center justify-center text-fuchsia-300 text-xs font-normal font-['Space_Grotesk'] leading-4 tracking-[3.60px]">02_</span>
+        </div>
+        <div className="inline-flex flex-col justify-start items-start">
+          <h2 className="w-auto h-9 flex items-center justify-center text-stone-200 text-3xl font-bold font-['Space_Grotesk'] uppercase leading-9">OPERATOR_DOSSIER</h2>
+        </div>
         {/* Header divider line — color follows outlineColor */}
         <div
-          className="h-px flex-1 ml-2 md:ml-4 transition-all duration-500"
-          style={{ background: `linear-gradient(to right, ${hex2rgba(outlineColor, 0.35)}, ${hex2rgba(outlineColor, 0.08)}, transparent)` }}
+          className="flex-1 h-px transition-all duration-500"
+          style={{ background: `linear-gradient(to right, ${hex2rgba(outlineColor, 0.40)}, transparent)` }}
         />
       </div>
 
       {/* Dossier Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start w-full">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 w-full">
 
         {/* Left Photo Card */}
-        <div className="w-full relative rounded-[10px] flex flex-col justify-start items-start self-stretch lg:col-span-5 xl:col-span-5 group">
+        <div className="w-full relative rounded-[10px] flex flex-col justify-start items-start self-stretch lg:col-span-5 xl:col-span-5 group h-full">
           <div className="w-full h-full absolute top-0 left-0 opacity-20 bg-sky-100/10 rounded-full blur-[32px] pointer-events-none"></div>
 
-          <div className="w-full relative rounded-[10px] flex flex-col justify-start items-start self-stretch" style={{ minHeight: 'clamp(400px, 60vw, 660px)' }}>
+          <div className="w-full relative rounded-[10px] flex flex-col justify-start items-start self-stretch h-full min-h-[400px] lg:min-h-0">
             <div className="w-full h-full absolute top-0 left-0 opacity-20 bg-sky-100/10 rounded-full blur-[32px] pointer-events-none"></div>
 
             {/* Main photo container — dynamic border + shadow */}
             <div
               className="w-full h-full self-stretch p-2 relative bg-neutral-900/60 rounded-[10px] backdrop-blur-[10px] flex flex-col justify-center items-start overflow-hidden transition-all duration-500"
               style={{
-                minHeight: 'clamp(400px, 60vw, 660px)',
                 outline: `1px solid ${hex2rgba(outlineColor, 0.4)}`,
                 outlineOffset: '-1px',
                 boxShadow: `0 0 20px 0 rgba(235,178,255,0.05), inset 0 0 15px 1px ${hex2rgba(outlineColor, 0.10)}`,
@@ -120,10 +123,11 @@ export default function OperatorDossier() {
               <div className="w-full text-sky-100 text-[13px] md:text-sm font-space leading-5 tracking-wider uppercase">[ ORIGIN NODE ]</div>
               <div className="w-full flex flex-col gap-4">
                 <div className="text-stone-200/80 text-sm md:text-base font-sans leading-relaxed">
-                  <span className="font-bold">2022 – 2025 :</span> SMK Negeri 1 Pundong (Computer Network &amp; Telecommunication Engineering).
+                  <span className="font-bold">2022 – 2025 :</span>
+                  SMK Negeri 1 Pundong (Teknik Jaringan Komputer &amp; Telekomunikasi).
                 </div>
                 <div className="text-stone-200/80 text-sm md:text-base font-sans leading-relaxed">
-                  <span className="font-bold">2025 – PRES :</span> Institut Seni Indonesia (ISI) Yogyakarta (D4 Desain Media). Status: Active deployment in bridging network logic with visual communications.
+                  <span className="font-bold">2025 – PRES :</span> Institut Seni Indonesia (ISI) Yogyakarta (D4 Desain Media). Status: Active.
                 </div>
               </div>
             </div>
@@ -136,8 +140,6 @@ export default function OperatorDossier() {
                   { exe: 'figma.exe', status: 'ACTIVE', active: true },
                   { exe: 'adobe_illustrator.exe', status: 'ACTIVE', active: true },
                   { exe: 'adobe_photoshop.exe', status: 'ACTIVE', active: true },
-                  { exe: 'coreldraw_suite.exe', status: 'STANDBY', active: false },
-                  { exe: 'generative_ai_modules', status: 'ACTIVE', active: true },
                   { exe: 'google_antigravity.exe', status: 'ACTIVE', active: true },
                 ].map(({ exe, status, active }) => (
                   <div key={exe} className="w-full flex items-end justify-between gap-2 group/row cursor-default">

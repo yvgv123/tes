@@ -194,7 +194,7 @@ export default function ProjectStack({ onOpenModal }: ProjectStackProps) {
         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 animate-bounce text-brand-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
         </svg>
-        <span>[ SCROLL DOWN OR SWIPE TO CYCLE DOSSIERS ]</span>
+        <span>[ GESER KE KIRI ATAU KANAN UNTUK MENGGANTI DOSSIERS ]</span>
       </div>
     </section>
   );

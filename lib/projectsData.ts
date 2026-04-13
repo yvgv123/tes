@@ -21,35 +21,35 @@ export const projectsData: Project[] = [
     id: "ARCHIVE_FILE_01",
     title: "Bukan<br>Boneka Biasa!",
     customTitleCss: "color:#fff;font-weight:700;font-family:'Space Grotesk',sans-serif;text-transform:uppercase;",
-    desc: "Revealing the Mystical Charm of Nini Thowong in Bantul, Yogyakarta",
+    desc: "Mengungkap Pesona Mistis Nini Thowong yang ada di Bantul, Yogyakarta",
     image: "/assets/nini_thowong.png",
     customImgCss: "position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:1;",
     leftPanelBg: "#0D1A3D",
     status: "ENCRYPTED", rev: "2.1.0", created: "2025-12-7", author: "GALIH_R", type: "E-Book",
-    detailDesc: "The visual documentation e-book 'Bukan Boneka Biasa!' corrects the negative perceptions surrounding the mystical tradition of Nini Thowong in Dusun Grudo through a combination of field research and visual communication design. This project explores the core values of the art form as a tangible expression of social harmony, mutual cooperation, and the history of traditional healing, while translating the intricate stories of the past into a functional and modern digital literacy format."
+    detailDesc: "Melalui e-book dokumentasi visual 'Bukan Boneka Biasa!', saya ingin meluruskan anggapan negatif tentang tradisi Nini Thowong di Dusun Grudo. pada karya ini, saya menggabungkan hasil riset lapangan langsung dengan desain komunikasi visual. Fokus utama saya adalah mengangkat nilai-nilai asli dari kesenian ini seperti kerukunan warga, semangat gotong royong, dan sejarah pengobatan tradisionalnya. Dimana, saya berusaha menerjemahkan cerita masa lalu yang kompleks ke dalam format digital yang lebih modern, fungsional, dan mudah dinikmati oleh pembaca saat ini."
   },
   {
     id: "ARCHIVE_FILE_02",
     title: "JEMPOL MENGETIK,<br>BANGSA TERUSIK",
     customTitleCss: "color:#fff;font-weight:700;font-family:'Space Grotesk',sans-serif;text-transform:uppercase;",
-    desc: "an educational poster describing the implementation of the values contained in Pancasila",
+    desc: "poster edukasi yang menjelaskan penerapan nilai-nilai terkandung dalam Pancasila",
     image: "/assets/jempol_mengetik.jpg",
     customImgCss: "position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:1;",
     leftPanelBg: "#0F1F1F",
     status: "RECOVERED", rev: "1.2.0", created: "2025-11-19",
     author: "SYSTEM_AUTO", type: "Poster",
-    detailDesc: "This poster illustrates how the action of a single finger on a smartphone can fracture national unity, a core principle of Pancasila. A hand is shown typing censored hate comments, represented by speech bubbles (\"JWIR\", \"SDM RENDAH!\", \"JW* = HAMA!\"), which are visually connected to severe cracks on a framed map of Indonesia under a spotlight in the background. This visualization, paired with the large headline 'JEMPOL MENGETIK, BANGSA TERUSIK' and the advisory text 'Saring sebelum sharing,' serves as a stark warning against reckless behavior on social media, demonstrating that it can literally tear apart the fabric of the country."
+    detailDesc: "Pada poster ini, saya ingin menunjukkan bagaimana tindakan sederhana dari satu jari di smartphone dapat merusak persatuan bangsa, nilai yang jadi inti Pancasila. Di sini, saya menampilkan ilustrasi tangan yang sedang mengetik komentar-komentar kebencian seperti \"J*WIR\", \"SDM RENDAH!\", dan \"J*W* = HAMA!\". Efek dari komentar ini saya visualisasikan dengan retakan parah pada bingkai peta Indonesia di latar belakang. Dengan memadukan visual tersebut, headline \"JEMPOL MENGETIK, BANGSA TERUSIK\", dan pesan \"Saring sebelum sharing\", saya merancang karya ini sebagai peringatan keras bahwa kebiasaan asal ketik di media sosial benar-benar bisa memecah belah negara kita."
   },
   {
     id: "ARCHIVE_FILE_03",
     title: "Labdagati<br>Digital Library",
     customTitleCss: "color:#fff;font-weight:700;font-family:'Space Grotesk',sans-serif;text-transform:uppercase;",
-    desc: "Warm digital library app interface design concept for competition purposes.",
+    desc: "Konsep desain antarmuka aplikasi perpustakaan digital dengan kesan hangat untuk tujuan kompetisi.",
     image: "/assets/labdagati_ui.png",
     customImgCss: "position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:1;",
     leftPanelBg: "#0F1F1F",
     status: "RECOVERED", rev: "1.4.0", created: "2024-9-25",
     author: "SYSTEM_AUTO", type: "INTERFACE_CONCEPT",
-    detailDesc: "Created specifically for a competition, the UI/UX design of the 'Labdagati' online library app offers a warm visual experience through a cohesive earth-tone color palette. Its interface is designed for optimal navigation, featuring an efficient authentication process, an organized home screen for various reading categories, and management features for downloads and custom personal shelves. This blend of minimalist aesthetics and intuitive functionality successfully creates a comfortable, modern digital reading space for book enthusiasts."
+    detailDesc: "Untuk proyek ini, saya merancang UI/UX aplikasi perpustakaan online 'Labdagati' khusus untuk sebuah lomba. Saya menggunakan palet warna earth-tone agar tampilannya terasa hangat dan terkesan klasik secara visual. Bagian antarmuka saya atur sedemikian rupa supaya navigasinya optimal dan mudah digunakan. Di dalamnya, saya membuat alur login yang efisien, beranda yang rapi untuk berbagai kategori bacaan, serta fitur untuk mengatur buku yang diunduh dan rak buku pribadi. Pada intinya, lewat perpaduan estetika yang minimalis dan fungsi yang intuitif, saya ingin menciptakan ruang baca digital yang modern dan nyaman bagi para penggemar buku."
   }
 ];

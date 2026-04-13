@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useEffect, useState, useCallback } from 'react';
 import {
   motion,
   useMotionValue,
@@ -10,315 +10,440 @@ import {
 } from 'framer-motion';
 import { projectsData, type Project } from '@/lib/projectsData';
 
-/* ─── Config ─────────────────────────────────────────────────────── */
-const SWIPE_THRESHOLD = 80;
+/* ─── Constants ──────────────────────────────────────────────────── */
+const SWIPE_THRESHOLD = 60;
+const CARD_W = 896;
+const CARD_H = 560;
+const IMG_W = 384;   // w-96
+const PAD_R = 48;    // p-12 right panel
+// Ghost cards: 3 layers behind active (closest → farthest)
+const GHOSTS = [
+  { px: 16, opacity: 0.80, zIndex: 20, tabLeft: 289, text: 'FILE_02', borderA: 0.30, bgA: 0.6, textColor: 'rgb(240,249,255)' },
+  { px: 32, opacity: 0.50, zIndex: 10, tabLeft: 145, text: 'FILE_03', borderA: 0.20, bgA: 0.5, textColor: 'rgba(240,249,255,0.7)' },
+  { px: 48, opacity: 0.30, zIndex: 5, tabLeft: 1, text: 'FILE_04', borderA: 0.10, bgA: 0.4, textColor: 'rgba(240,249,255,0.5)' },
+] as const;
+// Extra top space for ghost overflow + tab above ghost
+const GHOST_OVERFLOW = 48 + 32; // 48px (deepest ghost offset) + 32px (tab height)
 
-// Cards are rendered with a max width and scale for responsive sizing
-const DEPTH_CONFIG = [
-  { scale: 1,    y: 0,   opacity: 1,   zIndex: 30 },
-  { scale: 0.95, y: -20, opacity: 0.8, zIndex: 20 },
-  { scale: 0.90, y: -40, opacity: 0.5, zIndex: 10 },
-];
+/* ─── Hook: dynamic card scale ──────────────────────────────────── */
+function useCardScale() {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
 
-/* ─── CSS string → React.CSSProperties ──────────────────────────── */
-function parseCss(css: string): React.CSSProperties {
-  return Object.fromEntries(
-    css.split(';').filter(Boolean).map((s) => {
-      const [k, ...v] = s.split(':');
-      return [k.trim().replace(/-([a-z])/g, (_, c: string) => c.toUpperCase()), v.join(':').trim()];
-    })
-  ) as React.CSSProperties;
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const compute = () => {
+      const avail = el.clientWidth;
+      setScale(Math.min(1, avail / CARD_W));
+    };
+    compute();
+    const ro = new ResizeObserver(compute);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  return { wrapRef, scale };
 }
 
-const DEFAULT_IMG_CSS  = 'position:absolute;left:-10%;top:5%;width:90%;height:90%;object-fit:contain;z-index:1;';
-// Uniform title: always 22px, bold, uppercase — ignores per-project font-size overrides
-const UNIFORM_TITLE_STYLE: React.CSSProperties = {
-  color: '#fff',
-  fontSize: 22,
-  fontWeight: 700,
-  fontFamily: "'Space Grotesk', sans-serif",
-  lineHeight: 1.2,
-  textTransform: 'uppercase',
-  marginBottom: 10,
-};
-
-/* ─── Ghost tab at card top ──────────────────────────────────────── */
-function GhostTab({ offsetPct, text, borderOpacity, bgAlpha, color }: {
-  offsetPct: string; text: string; borderOpacity: string; bgAlpha: string; color: string;
-}) {
+/* ─── Ghost Tab ──────────────────────────────────────────────────── */
+function GhostTab({
+  leftPx, text, textColor, borderA, bgA,
+}: { leftPx: number; text: string; textColor: string; borderA: number; bgA: number }) {
   return (
-    <div style={{ position: 'absolute', left: offsetPct, top: '-31px', width: '120px', height: '32px', zIndex: 2 }}>
-      <div style={{ position: 'absolute', inset: 0, background: '#000' }} />
+    <div style={{ position: 'absolute', left: leftPx, top: -31, width: 128, height: 32, zIndex: 2 }}>
+      <svg width="100%" height="100%" viewBox="0 0 128 32" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0 }}>
+        {/* Black backing */}
+        <polygon points="0,32 0,0 112,0 128,32" fill="#000" />
+        {/* Zinc background */}
+        <polygon points="0,32 0,0 112,0 128,32" fill={`rgba(39,39,42,${bgA})`} />
+        {/* Cyan border (Left, Top, Sloped Right) */}
+        <polyline points="0,32 0,0 112,0 128,32" fill="none" stroke={`rgba(0,240,255,${borderA})`} strokeWidth="2" />
+      </svg>
       <div style={{
-        position: 'absolute', inset: 0, padding: '8px 12px',
-        background: `rgba(39,39,42,${bgAlpha})`,
-        borderLeft:  `1px solid rgba(0,240,255,${borderOpacity})`,
-        borderRight: `1px solid rgba(0,240,255,${borderOpacity})`,
-        borderTop:   `1px solid rgba(0,240,255,${borderOpacity})`,
+        position: 'absolute', inset: 0,
+        padding: '0 16px',
         display: 'flex', alignItems: 'center',
       }}>
-        <span style={{ color, fontSize: '9px', fontFamily: "'Space Grotesk',sans-serif", letterSpacing: '0.05em', lineHeight: '12px' }}>{text}</span>
+        <span style={{
+          color: textColor, fontSize: 9,
+          fontFamily: "'Space Grotesk', sans-serif",
+          fontWeight: 400, letterSpacing: '0.025em',
+        }}>{text}</span>
       </div>
     </div>
   );
 }
 
-/* ─── Single card ────────────────────────────────────────────────── */
-function FolderCard({
-  project, index, tabText, exitX, onSwipe, onOpenModal,
+/* ─── Active Card Content ────────────────────────────────────────── */
+function ActiveCardContent({ project, onOpenModal }: { project: Project; onOpenModal: (p: Project) => void }) {
+  return (
+    <>
+      {/* Active fuchsia tab — moved outside the overflow hidden container to follow the drag */}
+      <div style={{
+        position: 'absolute', left: 432, top: -31, width: 128, height: 32, zIndex: 10,
+      }}>
+        <svg width="100%" height="100%" viewBox="0 0 128 32" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0 }}>
+          <polygon points="0,32 0,0 112,0 128,32" fill="#000" />
+          <polygon points="0,32 0,0 112,0 128,32" fill="#c026d3" />
+        </svg>
+        <div style={{
+          position: 'absolute', inset: 0,
+          display: 'flex', alignItems: 'center', padding: '0 16px'
+        }}>
+          <span style={{ color: '#fff', fontSize: 9, fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '0.025em' }}>{project.id.replace('ARCHIVE_', '')}</span>
+        </div>
+      </div>
+
+      <div style={{
+        width: '100%', height: '100%',
+        background: '#22d3ee', /* activates as cyan BG visible beside image */
+        display: 'flex', overflow: 'hidden', position: 'relative',
+      }}>
+        {/* DECRYPTED_ASSET badge — bottom-left of image panel */}
+        <div style={{ position: 'absolute', left: 24, bottom: 24, zIndex: 3 }}>
+          <div style={{ padding: '3px 12px', background: '#22d3ee', display: 'inline-flex', alignItems: 'center' }}>
+            <span style={{
+              color: '#0f766e', fontSize: 10, fontWeight: 700,
+              fontFamily: "'Space Grotesk', sans-serif",
+              textTransform: 'uppercase', lineHeight: '16px', letterSpacing: '0.025em',
+            }}>DECRYPTED_ASSET</span>
+          </div>
+        </div>
+
+        {/* LEFT: Project image — w-96 (384px) × full height */}
+        <motion.img
+          key={`img-${project.id}`}
+          src={project.image}
+          alt={project.id}
+          initial={{ opacity: 0, scale: 1.04 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.15, duration: 0.55, ease: 'easeOut' }}
+          style={{ width: IMG_W, height: '100%', objectFit: 'cover', flexShrink: 0 }}
+        />
+
+        {/* RIGHT: Info panel — flex-1, p-12, bg-gray-950, justify-between */}
+        <div style={{
+          flex: 1, alignSelf: 'stretch',
+          padding: PAD_R,
+          background: '#030712',
+          display: 'flex', flexDirection: 'column',
+          justifyContent: 'space-between', alignItems: 'flex-start',
+        }}>
+
+          {/* TOP INFO BLOCK — Flex layout to naturally push down description */}
+          <div style={{
+            flex: 1, alignSelf: 'stretch',
+            display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
+            containerType: 'inline-size'
+          }}>
+
+            {/* ID row */}
+            <div style={{
+              width: '100%', display: 'flex',
+              justifyContent: 'space-between', alignItems: 'flex-start',
+              marginBottom: 32,
+            }}>
+              <motion.span
+                key={`id-${project.id}`}
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                transition={{ delay: 0.10, duration: 0.3 }}
+                style={{
+                  color: '#67e8f9', fontSize: 12,
+                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontWeight: 400, lineHeight: '16px', letterSpacing: '0.05em',
+                }}
+              >ID: {project.id}</motion.span>
+              {/* Lock icon */}
+              <svg width="16" height="21" viewBox="0 0 16 21" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0, marginTop: 1 }}>
+                <path d="M2 7H11V5C11 4.16667 10.7083 3.45833 10.125 2.875C9.54167 2.29167 8.83333 2 8 2C7.16667 2 6.45833 2.29167 5.875 2.875C5.29167 3.45833 5 4.16667 5 5H3C3 3.61667 3.4875 2.4375 4.4625 1.4625C5.4375 0.4875 6.61667 0 8 0C9.38333 0 10.5625 0.4875 11.5375 1.4625C12.5125 2.4375 13 3.61667 13 5V7H14C14.55 7 15.0208 7.19583 15.4125 7.5875C15.8042 7.97917 16 8.45 16 9V19C16 19.55 15.8042 20.0208 15.4125 20.4125C15.0208 20.8042 14.55 21 14 21H2C1.45 21 0.979167 20.8042 0.5875 20.4125C0.195833 20.0208 0 19.55 0 19V9C0 8.45 0.195833 7.97917 0.5875 7.5875C0.979167 7.19583 1.45 7 2 7ZM2 19H14V9H2V19ZM8 16C8.55 16 9.02083 15.8042 9.4125 15.4125C9.80417 15.0208 10 14.55 10 14C10 13.45 9.80417 12.9792 9.4125 12.5875C9.02083 12.1958 8.55 12 8 12C7.45 12 6.97917 12.1958 6.5875 12.5875C6.19583 12.9792 6 13.45 6 14C6 14.55 6.19583 15.0208 6.5875 15.4125C6.97917 15.8042 7.45 16 8 16ZM2 19V9V19Z" fill="#67e8f9"/>
+              </svg>
+            </div>
+
+            {/* Title */}
+            <motion.div
+              key={`title-${project.id}`}
+              initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.18, duration: 0.4, ease: 'easeOut' }}
+              style={{
+                width: '100%',
+                color: '#fff', fontSize: 'clamp(32px, 10cqi, 44px)', fontWeight: 700,
+                fontFamily: "'Space Grotesk', sans-serif",
+                lineHeight: 1.1, textTransform: 'uppercase',
+                textWrap: 'balance' as any,
+                marginBottom: 24,
+              }}
+              dangerouslySetInnerHTML={{ __html: project.title }}
+            />
+
+            {/* Description */}
+            <motion.div
+              key={`desc-${project.id}`}
+              initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.26, duration: 0.4 }}
+              style={{
+                width: '100%',
+              }}
+            >
+              <span style={{
+                display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical',
+                overflow: 'hidden', color: 'rgba(255,255,255,0.8)',
+                fontSize: 14, fontFamily: "'Inter', sans-serif",
+                fontWeight: 400, lineHeight: '24px',
+              }}>{project.desc}</span>
+            </motion.div>
+          </div>
+
+          {/* CTA BUTTON — pt-8 */}
+          <div style={{ paddingTop: 32 }}>
+            <motion.button
+              id="card-explore-btn"
+              onClick={() => onOpenModal(project)}
+              whileHover={{ backgroundColor: '#e879f9', boxShadow: '0 0 24px rgba(240,171,252,0.65)' }}
+              whileTap={{ scale: 0.96 }}
+              transition={{ type: 'spring', stiffness: 380, damping: 22 }}
+              style={{
+                padding: '16px 32px', background: '#f0abfc',
+                border: 'none', cursor: 'pointer',
+                display: 'flex', flexDirection: 'column',
+                justifyContent: 'center', alignItems: 'center',
+              }}
+            >
+              <span style={{
+                width: 128, height: 16, textAlign: 'center',
+                color: '#0f766e', fontSize: 12, fontWeight: 700,
+                fontFamily: "'Space Grotesk', sans-serif",
+                lineHeight: '16px', letterSpacing: '0.05em',
+                pointerEvents: 'none',
+              }}>EXPLORE_ARCHIVE</span>
+            </motion.button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+/* ─── Draggable Active Card ──────────────────────────────────────── */
+function DraggableCard({
+  project, exitDir, onSwipe, onOpenModal,
 }: {
   project: Project;
-  index: number;
-  tabText: string;
-  exitX: number;
+  exitDir: number; // -1 left, 1 right
   onSwipe: (dir: number) => void;
   onOpenModal: (p: Project) => void;
 }) {
-  const cfg    = DEPTH_CONFIG[Math.min(index, DEPTH_CONFIG.length - 1)];
-  const isFront = index === 0;
-
-  const x      = useMotionValue(0);
-  const rotate = useTransform(x, [-300, 0, 300], [-8, 0, 8]);
+  const x = useMotionValue(0);
+  const rotate = useTransform(x, [-400, 0, 400], [-10, 0, 10]);
 
   function handleDragEnd(_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) {
-    if (Math.abs(info.offset.x) > SWIPE_THRESHOLD) onSwipe(info.offset.x > 0 ? 1 : -1);
+    if (Math.abs(info.offset.x) > SWIPE_THRESHOLD || Math.abs(info.velocity.x) > 400) {
+      const dir = info.offset.x > 0 || info.velocity.x > 0 ? 1 : -1;
+      onSwipe(dir);
+    }
   }
 
   return (
     <motion.div
       key={project.id}
-      custom={exitX}
+      drag="x"
+      dragConstraints={{ left: 0, right: 0 }}
+      dragElastic={0.7}
+      onDragEnd={handleDragEnd}
       variants={{
-        initial: { y: cfg.y + 220, opacity: 0, scale: cfg.scale },
-        animate: { y: cfg.y,       opacity: cfg.opacity, scale: cfg.scale,
-                   transition: { type: 'spring', stiffness: 260, damping: 28, delay: index * 0.1 } },
-        exit: (ex: number) => ({
-          x: ex, opacity: 0,
-          transition: { duration: 0.28, ease: 'easeIn' },
+        enter: { opacity: 0, scale: 0.88, y: 18 },
+        center: { opacity: 1, scale: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 28, delay: 0.05 } },
+        exit: (dir: number) => ({
+          x: dir * 1200, opacity: 0, rotate: dir * 14,
+          transition: { duration: 0.38, ease: [0.32, 0, 0.67, 0] },
         }),
       }}
-      initial="initial"
-      animate="animate"
+      initial="enter"
+      animate="center"
       exit="exit"
+      custom={exitDir}
       style={{
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        width: '100%',
-        height: '100%',
-        zIndex: cfg.zIndex,
-        x:      isFront ? x : 0,
-        rotate: isFront ? rotate : 0,
-        cursor: isFront ? 'grab' : 'default',
+        position: 'absolute', inset: 0,
+        x, rotate, zIndex: 30, cursor: 'grab',
+        boxShadow: '0 32px 64px -12px rgba(0,0,0,0.7)',
       }}
-      drag={isFront ? 'x' : false}
-      dragConstraints={{ left: 0, right: 0 }}
-      dragElastic={0.85}
-      onDragEnd={isFront ? handleDragEnd : undefined}
-      whileDrag={isFront ? { cursor: 'grabbing' } : undefined}
+      whileDrag={{ cursor: 'grabbing' }}
     >
-      {/* ── Ghost card body ── */}
-      {!isFront && (
-        <>
-          <GhostTab
-            offsetPct={index === 1 ? '35%' : '18%'}
-            text={tabText}
-            borderOpacity={index === 1 ? '0.30' : '0.20'}
-            bgAlpha={index === 1 ? '0.6' : '0.5'}
-            color={index === 1 ? 'rgb(240,249,255)' : 'rgba(240,249,255,0.7)'}
-          />
-          <div style={{
-            width: '100%', height: '100%',
-            background: `rgba(39,39,42,${index === 1 ? 0.6 : 0.5})`,
-            boxShadow: 'inset 0 0 20px 1px rgba(0,240,255,0.20)',
-            outline: `1px solid rgba(0,240,255,${index === 1 ? 0.30 : 0.20})`,
-            outlineOffset: '-1px',
-            backdropFilter: 'blur(10px)',
-          }} />
-        </>
-      )}
+      <ActiveCardContent project={project} onOpenModal={onOpenModal} />
+    </motion.div>
+  );
+}
 
-      {/* ── Active front card body ── */}
-      {isFront && (
-        <>
-          {/* Fuchsia active tab */}
-          <div style={{ position: 'absolute', left: '52%', top: '-32px', width: '120px', height: '32px', background: '#c026d3', zIndex: 5 }} />
+/* ─── Full Card Stack (fixed 896×560) ───────────────────────────── */
+function CardStack({
+  projects, exitDir, isAdvancing, onSwipe, onOpenModal,
+}: {
+  projects: Project[];
+  exitDir: number;
+  isAdvancing: boolean;
+  onSwipe: (dir: number) => void;
+  onOpenModal: (p: Project) => void;
+}) {
+  return (
+    /* The stack root. Active card sits at left=0 top=0.
+       Ghost cards overflow upward with negative top px.
+       Parent must have overflow:visible. */
+    <div style={{ position: 'relative', width: CARD_W, height: CARD_H }}>
 
-          <div style={{ width: '100%', height: '100%', display: 'flex', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.6)' }}>
+      {/* Ghost cards — rendered back to front (deepest first) */}
+      {GHOSTS.slice().reverse().map((g, ri) => {
+        const realIdx = GHOSTS.length - 1 - ri; // 2 → 1 → 0
+        // When advancing: each ghost moves one slot forward
+        //   realIdx 0 (→ active slot 0px)  realIdx 1 (→ slot of realIdx 0)  realIdx 2 (→ slot of realIdx 1)
+        const advPx = realIdx === 0 ? 0 : GHOSTS[realIdx - 1].px;
+        const advOpacity = realIdx === 0 ? 1 : GHOSTS[realIdx - 1].opacity;
+        const targetPx = isAdvancing ? advPx : g.px;
+        const targetOpacity = isAdvancing ? advOpacity : g.opacity;
 
-            {/* LEFT: Artwork panel */}
-            <div style={{ flex: 1, alignSelf: 'stretch', position: 'relative', overflow: 'hidden', background: project.leftPanelBg }}>
-              <motion.img
-                key={`art-${project.id}`}
-                src={project.image}
-                alt={project.id}
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.22, duration: 0.5, ease: 'easeOut' }}
-                style={parseCss(project.customImgCss || DEFAULT_IMG_CSS)}
-              />
-              {/* DECRYPTED badge */}
-              <div style={{ position: 'absolute', left: 16, bottom: 16, zIndex: 2 }}>
-                <div style={{ padding: '3px 10px', background: '#22d3ee', display: 'inline-flex', alignItems: 'center' }}>
-                  <span style={{ color: '#0f766e', fontSize: 9, fontWeight: 700, fontFamily: "'Space Grotesk',sans-serif", textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                    DECRYPTED_ASSET
-                  </span>
-                </div>
-              </div>
-            </div>
+        const projIdx = (realIdx + 1) % projects.length;
+        const tabText = projects[projIdx].id.replace('ARCHIVE_', '');
 
-              {/* RIGHT: Data panel */}
-              <div style={{ flex: 1, alignSelf: 'stretch', padding: 'clamp(16px, 3vw, 40px)', background: '#030712', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', overflow: 'hidden' }}>
+        return (
+          <motion.div
+            key={`ghost-slot-${realIdx}`}
+            animate={{ left: targetPx, top: -targetPx, opacity: targetOpacity }}
+            transition={{ type: 'spring', stiffness: 380, damping: 32, mass: 0.9 }}
+            style={{
+              position: 'absolute',
+              width: CARD_W, height: CARD_H,
+              left: g.px, top: -g.px,   // initial (before first animate)
+              zIndex: g.zIndex,
+              background: `rgba(39,39,42,${g.bgA})`,
+              boxShadow: 'inset 0px 0px 20px 1px rgba(0,240,255,0.20)',
+              outline: `1px solid rgba(0,240,255,${g.borderA})`,
+              outlineOffset: '-1px',
+              backdropFilter: 'blur(10px)',
+            }}
+          >
+            <GhostTab
+              leftPx={g.tabLeft}
+              text={tabText}
+              textColor={g.textColor}
+              borderA={g.borderA}
+              bgA={g.bgA}
+            />
+          </motion.div>
+        );
+      })}
 
-                {/* ID + Lock */}
-                <motion.div
-                  key={`id-${project.id}`}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.12 }}
-                  style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10, flexShrink: 0 }}
-                >
-                  <span style={{ color: '#67e8f9', fontSize: 11, fontFamily: "'Space Grotesk',sans-serif", letterSpacing: '0.05em' }}>
-                    ID: {project.id}
-                  </span>
-                  <svg width="16" height="20" viewBox="0 0 16 20" fill="none" style={{ flexShrink: 0, marginTop: 1 }}>
-                    <rect x="1" y="8" width="14" height="11" rx="1" stroke="#67e8f9" strokeWidth="1.5" />
-                    <path d="M4 8V5.5a4 4 0 0 1 8 0V8" stroke="#67e8f9" strokeWidth="1.5" strokeLinecap="round" />
-                  </svg>
-                </motion.div>
+      {/* Active card with AnimatePresence for enter/exit */}
+      <AnimatePresence initial={false} custom={exitDir} mode="sync">
+        <DraggableCard
+          key={projects[0].id}
+          project={projects[0]}
+          exitDir={exitDir}
+          onSwipe={onSwipe}
+          onOpenModal={onOpenModal}
+        />
+      </AnimatePresence>
+    </div>
+  );
+}
 
-                {/* Title — uniform size across all cards */}
-                <motion.div
-                  key={`title-${project.id}`}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.17, duration: 0.4, ease: 'easeOut' }}
-                  style={UNIFORM_TITLE_STYLE}
-                  dangerouslySetInnerHTML={{ __html: project.title }}
-                />
-
-                {/* Description */}
-                <motion.div
-                  key={`desc-${project.id}`}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.24, duration: 0.4 }}
-                  style={{ color: 'rgba(255,255,255,0.7)', fontSize: 12, fontFamily: "'Inter',sans-serif", lineHeight: 1.6, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', flexShrink: 0 }}
-                >
-                  {project.desc}
-                </motion.div>
-
-                {/* Spacer */}
-                <div style={{ flex: 1 }} />
-
-                {/* CTA button — flexShrink:0 prevents clipping */}
-                <div style={{ paddingTop: 12, flexShrink: 0 }}>
-                  <motion.button
-                    id="card-explore-btn"
-                    onClick={() => onOpenModal(project)}
-                    whileHover={{ scale: 1.03, boxShadow: '0 0 28px rgba(240,171,252,0.75)', backgroundColor: '#e879f9' }}
-                    whileTap={{ scale: 0.97 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-                    style={{ padding: '10px 24px', background: '#f0abfc', border: 'none', cursor: 'pointer', display: 'inline-flex', justifyContent: 'center', alignItems: 'center', flexShrink: 0 }}
-                  >
-                    <span style={{ color: '#0f766e', fontSize: 11, fontWeight: 700, fontFamily: "'Space Grotesk',sans-serif", letterSpacing: '0.05em', textAlign: 'center', whiteSpace: 'nowrap' }}>
-                      EXPLORE_ARCHIVE
-                    </span>
-                  </motion.button>
-                </div>
-              </div>
-            </div>
-          </>
-        )}
-      </motion.div>
-    );
-  }
-
-/* ─── Main exported component ────────────────────────────────────── */
+/* ─── Exported Section ───────────────────────────────────────────── */
 export default function FolderStack({ onOpenModal }: { onOpenModal: (p: Project) => void }) {
   const [projects, setProjects] = useState(() => [...projectsData]);
-  const [exitX,    setExitX]    = useState(0);
+  const [exitDir, setExitDir] = useState<number>(0);
+  const [isAdvancing, setIsAdvancing] = useState(false);
+  const { wrapRef, scale } = useCardScale();
 
-  function handleSwipe(dir: number) {
-    setExitX(dir * 800);
+  const handleSwipe = useCallback((dir: number) => {
+    setExitDir(dir);
+    // Immediately rotate projects  (triggers active card exit via AnimatePresence)
+    setIsAdvancing(true);   // ghost cards spring forward
     setProjects(prev => {
       const next = [...prev];
       next.push(next.shift()!);
       return next;
     });
-  }
+    // After the active card has fully exited + new one is entering,
+    // let the ghost cards spring back to their natural resting positions.
+    setTimeout(() => setIsAdvancing(false), 420);
+  }, []);
 
-  const visible = projects.slice(0, 3);
+  // Visible height of the scaled card stack
+  // = (CARD_H + GHOST_OVERFLOW) * scale
+  const containerH = (CARD_H + GHOST_OVERFLOW) * scale;
 
   return (
     <section
       id="projects"
-      className="w-full max-w-[95%] lg:max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-[60px] pb-20 lg:pb-28 mt-0 lg:mt-4 pt-0 relative flex flex-col items-center"
+      className="w-full max-w-[95%] lg:max-w-[1600px] mx-auto
+                 px-4 sm:px-8 lg:px-[60px]
+                 pb-20 lg:pb-28 mt-0 lg:mt-4 pt-0
+                 relative flex flex-col items-center"
     >
-      {/* Section header */}
-      <div className="w-full flex items-center justify-center gap-4 mb-12 md:mb-20">
-        <span className="text-[#f0abfc] text-sm md:text-base font-space font-bold tracking-widest">03_</span>
-        <h2 className="text-white text-2xl md:text-4xl font-black font-sans tracking-widest uppercase relative">
-          <span className="absolute -left-1 text-brand-cyan mix-blend-screen opacity-50">ENCRYPTED_FILES</span>
-          <span className="relative">ENCRYPTED_FILES</span>
-        </h2>
+      {/* ── Section header ── */}
+      <div className="w-full h-9 inline-flex justify-start items-center gap-4 mb-12 md:mb-20">
+        <div className="inline-flex flex-col justify-start items-start">
+          <span className="w-8 h-4 flex items-center justify-center text-fuchsia-300 text-xs font-normal font-['Space_Grotesk'] leading-4 tracking-[3.60px]">03_</span>
+        </div>
+        <div className="inline-flex flex-col justify-start items-start">
+          <h2 className="w-auto h-9 flex items-center justify-center text-stone-200 text-3xl font-bold font-['Space_Grotesk'] uppercase leading-9">ENCRYPTED_FILES</h2>
+        </div>
+        <div className="flex-1 h-px bg-gradient-to-r from-fuchsia-300/40 to-fuchsia-300/0"></div>
       </div>
 
-      {/* Card stack */}
-      <div className="relative w-full max-w-[90vw] sm:max-w-[680px] mx-auto">
-        {/* Fixed height on mobile, aspect-ratio on sm+ */}
-        <div
-          className="relative sm:hidden"
-          style={{ height: '360px', overflow: 'visible' }}
-        >
-          <div className="absolute inset-0" style={{ overflow: 'visible' }}>
-            <AnimatePresence initial={true} custom={exitX}>
-              {visible.map((project, index) => (
-                <FolderCard
-                  key={project.id}
-                  project={project}
-                  index={index}
-                  tabText={project.id}
-                  exitX={exitX}
-                  onSwipe={handleSwipe}
-                  onOpenModal={onOpenModal}
-                />
-              ))}
-            </AnimatePresence>
-          </div>
-        </div>
-        <div
-          className="relative hidden sm:block"
-          style={{ paddingTop: '62%', overflow: 'visible' }}
-        >
-          <div className="absolute inset-0" style={{ overflow: 'visible' }}>
-            <AnimatePresence initial={true} custom={exitX}>
-              {visible.map((project, index) => (
-                <FolderCard
-                  key={project.id}
-                  project={project}
-                  index={index}
-                  tabText={project.id}
-                  exitX={exitX}
-                  onSwipe={handleSwipe}
-                  onOpenModal={onOpenModal}
-                />
-              ))}
-            </AnimatePresence>
+      {/* ── Responsive card wrapper ── */}
+      {/* wrapRef measures its own width to compute scale */}
+      <div
+        ref={wrapRef}
+        style={{
+          width: '100%',
+          maxWidth: CARD_W,
+          /* dynamic height so layout flows correctly at every scale */
+          height: containerH,
+          position: 'relative',
+          overflow: 'visible',
+        }}
+      >
+        {/* Scaled inner: transform-origin bottom-center */}
+        <div style={{
+          position: 'absolute',
+          /* push card bottom to sit at container bottom */
+          bottom: 0,
+          left: '50%',
+          /* card natural width centred */
+          width: CARD_W,
+          marginLeft: -(CARD_W / 2),
+          /* total unscaled height (card + ghost overflow above) */
+          height: CARD_H + GHOST_OVERFLOW,
+          transform: `scale(${scale})`,
+          transformOrigin: 'bottom center',
+        }}>
+          {/* Ghost cards live in the top GHOST_OVERFLOW px; active card at bottom */}
+          <div style={{
+            position: 'absolute',
+            bottom: 0, left: 0,
+            width: CARD_W, height: CARD_H,
+            overflow: 'visible',
+          }}>
+            <CardStack
+              projects={projects}
+              exitDir={exitDir}
+              isAdvancing={isAdvancing}
+              onSwipe={handleSwipe}
+              onOpenModal={onOpenModal}
+            />
           </div>
         </div>
       </div>
 
-      {/* Swipe hint */}
-      <div className="mt-8 md:mt-16 text-center text-brand-stone/40 font-mono text-xs md:text-sm flex flex-col items-center gap-2">
+      {/* ── Swipe hint ── */}
+      <div
+        className="mt-6 md:mt-10 text-center text-brand-stone/40 font-mono
+                   text-xs md:text-sm flex flex-col items-center gap-2"
+      >
         <motion.div
-          animate={{ x: [0, 12, -12, 0] }}
-          transition={{ repeat: Infinity, duration: 2.4, ease: 'easeInOut' }}
-          className="text-brand-cyan text-lg"
-        >
-          ⟵ ⟶
-        </motion.div>
+          animate={{ x: [0, 14, -14, 0] }}
+          transition={{ repeat: Infinity, duration: 2.6, ease: 'easeInOut' }}
+          className="text-brand-cyan text-xl"
+        >⟵ ⟶</motion.div>
         <span>[ DRAG LEFT OR RIGHT TO CYCLE DOSSIERS ]</span>
       </div>
     </section>

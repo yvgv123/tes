@@ -4,12 +4,12 @@ import { useEffect, useRef, useState } from 'react';
 import { useOutlineColor } from '@/lib/OutlineColorContext';
 
 const PRESET_COLORS = [
-  { hex: '#69FEFF', label: 'Cyan'   },
-  { hex: '#6091FF', label: 'Blue'   },
-  { hex: '#7FFF6F', label: 'Green'  },
-  { hex: '#BF4B26', label: 'Ember'  },
-  { hex: '#5F3CFF', label: 'Violet' },
-  { hex: '#FFFFFF', label: 'White'  },
+  { hex: '#000BD0', label: 'Blue' },
+  { hex: '#33D522', label: 'Green' },
+  { hex: '#D73C1A', label: 'Red' },
+  { hex: '#C941AE', label: 'Pink' },
+  { hex: '#00D6D3', label: 'Cyan' },
+  { hex: '#FFFFFF', label: 'White' },
 ];
 
 const CANVAS_PX = 192;
@@ -20,10 +20,10 @@ interface ColorWheelPickerProps {
 
 export default function ColorWheelPicker({ onClose }: ColorWheelPickerProps) {
   const { outlineColor, setOutlineColor } = useOutlineColor();
-  const canvasRef  = useRef<HTMLCanvasElement>(null);
-  const popupRef   = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const popupRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [pickerPos,  setPickerPos]  = useState<{ x: number; y: number } | null>(null);
+  const [pickerPos, setPickerPos] = useState<{ x: number; y: number } | null>(null);
 
   // Draw color wheel once on mount
   useEffect(() => {
@@ -34,13 +34,13 @@ export default function ColorWheelPicker({ onClose }: ColorWheelPickerProps) {
 
     const cx = CANVAS_PX / 2;
     const cy = CANVAS_PX / 2;
-    const r  = CANVAS_PX / 2 - 2;
+    const r = CANVAS_PX / 2 - 2;
 
     for (let angle = 0; angle < 360; angle++) {
       const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
-      g.addColorStop(0,   `hsl(${angle}, 0%, 100%)`);
+      g.addColorStop(0, `hsl(${angle}, 0%, 100%)`);
       g.addColorStop(0.5, `hsl(${angle}, 100%, 50%)`);
-      g.addColorStop(1,   `hsl(${angle}, 100%, 5%)`);
+      g.addColorStop(1, `hsl(${angle}, 100%, 5%)`);
       ctx.beginPath();
       ctx.moveTo(cx, cy);
       ctx.arc(cx, cy, r, ((angle - 1) * Math.PI) / 180, ((angle + 1) * Math.PI) / 180);
@@ -50,7 +50,7 @@ export default function ColorWheelPicker({ onClose }: ColorWheelPickerProps) {
     }
 
     const dark = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
-    dark.addColorStop(0,   'rgba(0,0,0,0.4)');
+    dark.addColorStop(0, 'rgba(0,0,0,0.4)');
     dark.addColorStop(0.7, 'rgba(0,0,0,0)');
     ctx.beginPath();
     ctx.arc(cx, cy, r, 0, Math.PI * 2);
@@ -70,13 +70,13 @@ export default function ColorWheelPicker({ onClose }: ColorWheelPickerProps) {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const rect   = canvas.getBoundingClientRect();
+    const rect = canvas.getBoundingClientRect();
     const scaleX = CANVAS_PX / rect.width;
     const scaleY = CANVAS_PX / rect.height;
     const px = Math.max(0, Math.min(CANVAS_PX - 1, (clientX - rect.left) * scaleX));
-    const py = Math.max(0, Math.min(CANVAS_PX - 1, (clientY - rect.top)  * scaleY));
+    const py = Math.max(0, Math.min(CANVAS_PX - 1, (clientY - rect.top) * scaleY));
 
-    const d   = ctx.getImageData(px, py, 1, 1).data;
+    const d = ctx.getImageData(px, py, 1, 1).data;
     const hex = '#' + [d[0], d[1], d[2]].map(v => v.toString(16).padStart(2, '0')).join('');
     setOutlineColor(hex);
     // Store as fraction of canvas CSS size
@@ -111,57 +111,42 @@ export default function ColorWheelPicker({ onClose }: ColorWheelPickerProps) {
 
   // Picker dot position as percentage of rendered canvas area
   const dotLeft = pickerPos ? `${pickerPos.x * 100}%` : '50%';
-  const dotTop  = pickerPos ? `${pickerPos.y * 100}%` : '50%';
+  const dotTop = pickerPos ? `${pickerPos.y * 100}%` : '50%';
 
   return (
-    // fixed — always anchored below the navbar on all screen sizes
-    // top: navbar is pt-4(16px) + py-3(12px) + ~20px content ≈ 48px, plus 12px gap = 60px
-    // Using 76px gives a comfortable 12–16px gap below the navbar on all breakpoints
     <div
       ref={popupRef}
-      className="fixed z-[200] right-4 sm:right-8"
+      className="fixed z-[200] right-3 sm:right-6 md:right-8"
       style={{
         top: '76px',
-        width: 'min(calc(100vw - 32px), 288px)',
-        filter: 'drop-shadow(0 8px 32px rgba(0,0,0,0.9))',
+        width: 'min(calc(100vw - 24px), 340px)',
       }}
     >
-      <div className="w-full relative bg-zinc-950 rounded-[10px] overflow-hidden border border-white/10">
-        {/* Ambient glow BG */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute w-full h-full bg-black" />
-          <div
-            className="absolute w-[469px] h-[462px] -right-28 -top-48 rounded-full"
-            style={{ background: 'radial-gradient(ellipse 50% 50% at 50% 50%, rgba(232,222,197,0.15) 0%, rgba(205,198,180,0) 100%)' }}
-          />
-          <div
-            className="absolute w-[523px] h-[515px] -left-48 bottom-0 rounded-full"
-            style={{ background: 'radial-gradient(ellipse 50% 50% at 50% 50%, rgba(232,222,197,0.15) 0%, rgba(205,198,180,0) 100%)' }}
-          />
-        </div>
+      <div className="w-full p-5 sm:p-6 bg-zinc-950 rounded-[10px] shadow-[0px_8px_32px_0px_rgba(0,0,0,0.80)] outline outline-1 outline-offset-[-1px] outline-white/5 backdrop-blur-[6px] flex flex-col justify-start items-start gap-5 sm:gap-6 overflow-hidden">
 
-        {/* Content */}
-        <div className="relative z-10 p-4 sm:p-5 flex flex-col items-center gap-4 sm:gap-5">
-
-          {/* Header */}
-          <div className="w-full flex items-center justify-between">
-            <span className="text-[9px] font-space tracking-[0.25em] uppercase text-white/40">
+        {/* Header */}
+        <div className="self-stretch inline-flex justify-between items-center">
+          <div className="inline-flex flex-col justify-start items-start">
+            <span className="justify-center text-zinc-500 text-xs font-bold font-['JetBrains_Mono'] uppercase leading-5 tracking-[2.40px]">
               OUTLINE_COLOR
             </span>
-            <button
-              onClick={onClose}
-              className="text-white/30 hover:text-white/70 transition-colors p-0.5"
-              aria-label="Close color picker"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3.5 h-3.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
           </div>
+          <button
+            onClick={onClose}
+            className="w-4 h-4 relative overflow-hidden flex items-center justify-center cursor-pointer group"
+            aria-label="Close color picker"
+          >
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+              <path d="M1 1L9 9M1 9L9 1" stroke="#888" strokeWidth="1.5" strokeLinecap="round"
+                className="group-hover:stroke-white transition-colors" />
+            </svg>
+          </button>
+        </div>
 
-          {/* Color Wheel Canvas */}
+        {/* Color Wheel Canvas */}
+        <div className="w-full py-1 sm:py-2 inline-flex justify-center items-center">
           <div
-            className="relative w-40 h-40 sm:w-48 sm:h-48 rounded-full overflow-hidden cursor-crosshair flex-shrink-0"
+            className="relative w-[55%] max-w-[192px] aspect-square rounded-full overflow-hidden cursor-crosshair flex-shrink-0"
             style={{ boxShadow: `0 0 0 1px rgba(255,255,255,0.08), 0 0 20px ${outlineColor}33` }}
           >
             <canvas
@@ -175,70 +160,82 @@ export default function ColorWheelPicker({ onClose }: ColorWheelPickerProps) {
             />
             {pickerPos && (
               <div
-                className="absolute w-5 h-5 rounded-full pointer-events-none -translate-x-1/2 -translate-y-1/2"
+                className="absolute w-5 h-5 sm:w-6 sm:h-6 rounded-full pointer-events-none -translate-x-1/2 -translate-y-1/2"
                 style={{
                   left: dotLeft,
-                  top:  dotTop,
+                  top: dotTop,
                   backgroundColor: outlineColor,
-                  boxShadow: `0 0 0 2px white, 0 0 8px ${outlineColor}`,
+                  boxShadow: `0 1px 2px rgba(0,0,0,0.15)`,
+                  border: '2px solid white',
                 }}
               />
             )}
           </div>
+        </div>
 
-          {/* Current color hex display */}
-          <div className="w-full flex items-center gap-3">
-            <div
-              className="w-9 h-8 rounded-[3px] border border-white/20 flex-shrink-0 transition-colors duration-150"
-              style={{ backgroundColor: outlineColor, boxShadow: `0 0 12px ${outlineColor}66` }}
-            />
-            <div className="flex flex-col min-w-0">
-              <span className="text-[8px] text-white/30 font-space tracking-[0.2em] uppercase">Selected</span>
-              <span className="text-[11px] text-white font-space font-bold tracking-wider uppercase truncate">
-                {outlineColor.toUpperCase()}
-              </span>
-            </div>
+        {/* Selected color display */}
+        <div className="self-stretch inline-flex justify-start items-center gap-3 sm:gap-4">
+          <div
+            className="w-8 h-8 sm:w-10 sm:h-10 rounded-[5px] flex-shrink-0 transition-colors duration-150"
+            style={{ backgroundColor: outlineColor }}
+          />
+          <div className="inline-flex flex-col justify-start items-start">
+            <span className="text-zinc-500 text-[8px] font-normal font-['JetBrains_Mono'] uppercase leading-4 sm:leading-5 tracking-wider">
+              SELECTED
+            </span>
+            <span className="text-white text-sm sm:text-base font-bold font-['JetBrains_Mono'] uppercase leading-6 sm:leading-7">
+              {outlineColor.toUpperCase()}
+            </span>
           </div>
+        </div>
 
-          {/* Preset swatches */}
-          <div className="w-full flex flex-col gap-2">
-            <span className="text-[8px] text-white/30 font-space tracking-[0.2em] uppercase">Presets</span>
-            <div className="flex gap-1.5 sm:gap-2">
-              {PRESET_COLORS.map(({ hex, label }) => (
-                <button
-                  key={hex}
-                  title={label}
-                  onClick={() => setOutlineColor(hex)}
-                  className="flex-1 h-7 rounded-[3px] border transition-all duration-150 min-w-0"
-                  style={{
-                    backgroundColor: hex,
-                    borderColor: outlineColor === hex ? 'white' : 'rgba(255,255,255,0.15)',
-                    boxShadow:   outlineColor === hex ? `0 0 10px ${hex}99` : 'none',
-                    transform:   outlineColor === hex ? 'scale(1.05)' : 'scale(1)',
-                  }}
-                  aria-label={`Select ${label}`}
-                />
-              ))}
-            </div>
+        {/* Presets */}
+        <div className="self-stretch flex flex-col justify-start items-start gap-2 sm:gap-3">
+          <span className="text-zinc-500 text-[10px] font-normal font-['JetBrains_Mono'] uppercase leading-5 tracking-wider">
+            PRESETS
+          </span>
+          <div className="self-stretch inline-flex justify-between items-start gap-1.5 sm:gap-2">
+            {PRESET_COLORS.map(({ hex, label }) => (
+              <button
+                key={hex}
+                title={label}
+                onClick={() => setOutlineColor(hex)}
+                className="flex-1 aspect-square max-w-[40px] rounded-[5px] transition-all duration-150 cursor-pointer border-2"
+                style={{
+                  backgroundColor: hex,
+                  borderColor: outlineColor.toUpperCase() === hex.toUpperCase() ? 'white' : 'transparent',
+                  boxShadow: outlineColor.toUpperCase() === hex.toUpperCase() ? `0 0 10px ${hex}99` : 'none',
+                  transform: outlineColor.toUpperCase() === hex.toUpperCase() ? 'scale(1.08)' : 'scale(1)',
+                }}
+                aria-label={`Select ${label}`}
+              />
+            ))}
           </div>
+        </div>
 
-          {/* Apply / Reset */}
-          <div className="w-full flex gap-2">
+        {/* Action buttons */}
+        <div className="self-stretch pt-1 sm:pt-2 flex flex-col justify-start items-start">
+          <div className="self-stretch inline-flex justify-start items-start gap-2 sm:gap-3">
             <button
               onClick={() => setOutlineColor('#00F0FF')}
-              className="flex-1 py-2 text-[9px] font-space tracking-[0.2em] uppercase text-white/40 hover:text-white/70 border border-white/10 hover:border-white/20 rounded-[3px] transition-all"
+              className="flex-[0_0_auto] px-6 sm:px-10 py-2.5 sm:py-3 rounded-lg outline outline-1 outline-offset-[-1px] outline-white/10 inline-flex justify-center items-center cursor-pointer hover:outline-white/25 transition-all"
             >
-              Reset
+              <span className="text-center text-zinc-500 text-[11px] sm:text-xs font-bold font-['JetBrains_Mono'] leading-4 tracking-wider">
+                RESET
+              </span>
             </button>
             <button
               onClick={onClose}
-              className="flex-1 py-2 text-[9px] font-space tracking-[0.2em] uppercase text-black font-bold rounded-[3px] transition-all"
-              style={{ backgroundColor: outlineColor, boxShadow: `0 0 12px ${outlineColor}66` }}
+              className="flex-1 px-6 sm:px-10 py-2.5 sm:py-3 rounded-lg inline-flex justify-center items-center cursor-pointer transition-all hover:brightness-110"
+              style={{ backgroundColor: outlineColor }}
             >
-              Apply
+              <span className="text-center text-neutral-950 text-[11px] sm:text-xs font-bold font-['JetBrains_Mono'] leading-4 tracking-wider">
+                APPLY
+              </span>
             </button>
           </div>
         </div>
+
       </div>
     </div>
   );

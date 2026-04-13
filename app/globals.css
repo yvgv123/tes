@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap');
 @import "tailwindcss";
 
 /* ─── Brand Design Tokens (Tailwind v4 @theme) ─────────────────── */
@@ -10,6 +10,9 @@
   --color-brand-matte: #121212;
 
   --font-space: "Space Grotesk", sans-serif;
+
+  /* Custom breakpoints */
+  --breakpoint-xs: 400px;
 }
 
 /* ─── Base Styles ──────────────────────────────────────────────── */
@@ -35,3 +38,5 @@ html, body {
 #card-explore-btn:hover {
   background: #e879f9 !important;
 }
+
+
