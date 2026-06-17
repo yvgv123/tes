@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { Project } from '@/lib/projectsData';
 
 interface DossierModalProps {
@@ -9,6 +9,112 @@ interface DossierModalProps {
   onClose: () => void;
 }
 
+/* ─── Carousel Component ─────────────────────────────────────────── */
+function ImageCarousel({ images }: { images: { src: string; alt: string }[] }) {
+  const [current, setCurrent] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const resetTimer = useCallback(() => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setCurrent(prev => (prev + 1) % images.length);
+    }, 10000);
+  }, [images.length]);
+
+  useEffect(() => {
+    resetTimer();
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [resetTimer]);
+
+  // Reset to slide 0 whenever images change (new project opened)
+  useEffect(() => {
+    setCurrent(0);
+  }, [images]);
+
+  const goNext = () => {
+    setCurrent(prev => (prev + 1) % images.length);
+    resetTimer();
+  };
+
+  const goPrev = () => {
+    setCurrent(prev => (prev - 1 + images.length) % images.length);
+    resetTimer();
+  };
+
+  return (
+    <div className="w-full h-full relative flex flex-col">
+      {/* Image area */}
+      <div className="flex-1 relative overflow-hidden">
+        {images.map((img, i) => (
+          <img
+            key={img.src}
+            src={img.src}
+            alt={img.alt}
+            className="absolute inset-0 w-full h-full object-contain transition-all duration-500 ease-in-out"
+            style={{
+              opacity: i === current ? 1 : 0,
+              transform: i === current ? 'scale(1)' : 'scale(1.02)',
+              zIndex: i === current ? 2 : 1,
+            }}
+          />
+        ))}
+
+        {/* Previous Button */}
+        <button
+          onClick={goPrev}
+          className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center bg-black/50 hover:bg-cyan-400/20 border border-cyan-400/30 hover:border-cyan-400/60 transition-all duration-200 group cursor-pointer"
+          aria-label="Previous slide"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-cyan-300 group-hover:text-white transition-colors" />
+          </svg>
+        </button>
+
+        {/* Next Button */}
+        <button
+          onClick={goNext}
+          className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center bg-black/50 hover:bg-cyan-400/20 border border-cyan-400/30 hover:border-cyan-400/60 transition-all duration-200 group cursor-pointer"
+          aria-label="Next slide"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-cyan-300 group-hover:text-white transition-colors" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Bottom Bar: caption + dot indicators + counter */}
+      <div className="w-full px-3 py-2 bg-neutral-900/80 border-t border-gray-700/30 flex items-center justify-between gap-2 shrink-0">
+        {/* Caption */}
+        <span className="text-cyan-300 text-[9px] font-space uppercase tracking-wider truncate max-w-[40%]">
+          {images[current].alt}
+        </span>
+
+        {/* Dot indicators */}
+        <div className="flex items-center gap-1.5">
+          {images.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => { setCurrent(i); resetTimer(); }}
+              className={`w-1.5 h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                i === current
+                  ? 'bg-cyan-400 shadow-[0_0_6px_rgba(34,211,238,0.6)] w-4 rounded-sm'
+                  : 'bg-zinc-600 hover:bg-zinc-400'
+              }`}
+              aria-label={`Go to slide ${i + 1}`}
+            />
+          ))}
+        </div>
+
+        {/* Counter */}
+        <span className="text-zinc-500 text-[9px] font-space tracking-wider">
+          {String(current + 1).padStart(2, '0')}/{String(images.length).padStart(2, '0')}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/* ─── DossierModal ───────────────────────────────────────────────── */
 export default function DossierModal({ isOpen, project, onClose }: DossierModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -41,6 +147,8 @@ export default function DossierModal({ isOpen, project, onClose }: DossierModalP
 
   if (!isOpen || !project) return null;
 
+  const hasCarousel = project.carouselImages && project.carouselImages.length > 0;
+
   return (
     <div
       ref={modalRef}
@@ -51,7 +159,7 @@ export default function DossierModal({ isOpen, project, onClose }: DossierModalP
       <div
         ref={contentRef}
         id="dossier-modal-content"
-        className="w-[848px] h-auto md:h-[566.8px] max-w-full bg-neutral-700/40 outline outline-1 outline-offset-[-1px] outline-cyan-400/20 backdrop-blur-[10px] flex flex-col justify-start items-start transform overflow-hidden lg:overflow-visible relative"
+        className="w-[848px] h-[90vh] md:h-[566.8px] max-h-[90vh] max-w-[95vw] bg-neutral-700/40 outline outline-1 outline-offset-[-1px] outline-cyan-400/20 backdrop-blur-[10px] flex flex-col justify-start items-start transform overflow-hidden lg:overflow-visible relative mx-auto"
         style={{ opacity: 0 }}
       >
         {/* Mobile-only floating close button — top-right corner */}
@@ -107,16 +215,22 @@ export default function DossierModal({ isOpen, project, onClose }: DossierModalP
         {/* Body */}
         <div className="w-full flex-1 flex flex-col md:flex-row justify-start items-start overflow-y-auto md:overflow-hidden">
 
-          {/* Left Artwork */}
-          <div className="w-full md:flex-1 h-[300px] md:h-full relative bg-zinc-950/95 flex justify-center items-center overflow-hidden border-b md:border-b-0 border-gray-700/30">
-            <img
-              src={project.image}
-              alt={project.title.replace(/<br>/gi, ' ')}
-              className="w-[80%] md:w-[512px] h-[80%] md:h-[512px] object-contain relative z-10"
-            />
-            <div className="absolute inset-0 px-8 py-8 opacity-20 bg-cover mix-blend-screen pointer-events-none"
-              style={{ backgroundImage: `url('https://placehold.co/448x560/222/222?text=topo')` }}
-            ></div>
+          {/* Left Artwork / Carousel */}
+          <div className="w-full md:flex-1 min-h-[300px] sm:min-h-[400px] md:min-h-0 h-auto md:h-full relative bg-zinc-950/95 flex justify-center items-center overflow-hidden border-b md:border-b-0 border-gray-700/30 shrink-0">
+            {hasCarousel ? (
+              <ImageCarousel images={project.carouselImages!} />
+            ) : (
+              <>
+                <img
+                  src={project.image}
+                  alt={project.title.replace(/<br>/gi, ' ')}
+                  className="w-[80%] md:w-[512px] h-[80%] md:h-[512px] object-contain relative z-10"
+                />
+                <div className="absolute inset-0 px-8 py-8 opacity-20 bg-cover mix-blend-screen pointer-events-none"
+                  style={{ backgroundImage: `url('https://placehold.co/448x560/222/222?text=topo')` }}
+                ></div>
+              </>
+            )}
           </div>
 
           {/* Right Metadata */}

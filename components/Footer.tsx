@@ -1,7 +1,13 @@
+import { motion } from 'framer-motion';
+
 export default function Footer() {
   return (
-    <footer
+    <motion.footer
       id="comm_link"
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.6 }}
       className="w-full px-4 sm:px-8 md:px-16 lg:px-24 py-12 bg-neutral-900 border-t border-cyan-400/10 flex flex-col justify-start items-center mt-0"
     >
       <div className="w-full max-w-[896px] flex flex-col justify-start items-start gap-10">
@@ -75,6 +81,6 @@ export default function Footer() {
         </div>
 
       </div>
-    </footer>
+    </motion.footer>
   );
 }

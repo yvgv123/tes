@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useOutlineColor } from '@/lib/OutlineColorContext';
+import { motion } from 'framer-motion';
 
 export default function OperatorDossier() {
   const { outlineColor } = useOutlineColor();
@@ -17,10 +18,16 @@ export default function OperatorDossier() {
   return (
     <section
       id="dossier"
-      className="w-full max-w-[95%] lg:max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-[60px] pb-20 lg:pb-28 mt-20 lg:mt-28 pt-0"
+      className="w-full max-w-[95%] lg:max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-[60px] pb-20 lg:pb-28 mt-20 lg:mt-28 pt-0 overflow-hidden"
     >
       {/* Header */}
-      <div className="w-full h-9 inline-flex justify-start items-center gap-4 mb-8 md:mb-12">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-50px" }}
+        transition={{ duration: 0.6 }}
+        className="w-full h-9 inline-flex justify-start items-center gap-4 mb-8 md:mb-12"
+      >
         <div className="inline-flex flex-col justify-start items-start">
           <span className="w-8 h-4 flex items-center justify-center text-fuchsia-300 text-xs font-normal font-['Space_Grotesk'] leading-4 tracking-[3.60px]">02_</span>
         </div>
@@ -32,16 +39,22 @@ export default function OperatorDossier() {
           className="flex-1 h-px transition-all duration-500"
           style={{ background: `linear-gradient(to right, ${hex2rgba(outlineColor, 0.40)}, transparent)` }}
         />
-      </div>
+      </motion.div>
 
       {/* Dossier Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 w-full">
 
         {/* Left Photo Card */}
-        <div className="w-full relative rounded-[10px] flex flex-col justify-start items-start self-stretch lg:col-span-5 xl:col-span-5 group h-full">
+        <motion.div 
+          initial={{ opacity: 0, x: -30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="w-full relative rounded-[10px] flex flex-col justify-start items-start self-stretch lg:col-span-5 xl:col-span-5 group h-full"
+        >
           <div className="w-full h-full absolute top-0 left-0 opacity-20 bg-sky-100/10 rounded-full blur-[32px] pointer-events-none"></div>
 
-          <div className="w-full relative rounded-[10px] flex flex-col justify-start items-start self-stretch h-full min-h-[400px] lg:min-h-0">
+          <div className="w-full relative rounded-[10px] flex flex-col justify-start items-start self-stretch h-full min-h-[350px] sm:min-h-[400px] lg:min-h-0">
             <div className="w-full h-full absolute top-0 left-0 opacity-20 bg-sky-100/10 rounded-full blur-[32px] pointer-events-none"></div>
 
             {/* Main photo container — dynamic border + shadow */}
@@ -85,7 +98,7 @@ export default function OperatorDossier() {
 
               {/* TOP SECRET stamp */}
               <img
-                className="w-48 sm:w-56 md:w-72 lg:w-80 absolute top-[-5%] md:top-[-6%] right-[-8%] md:right-[-12%] origin-top-left rotate-[6.94deg] mix-blend-multiply brightness-[0.85] contrast-125 z-30 pointer-events-none"
+                className="w-32 sm:w-48 md:w-56 lg:w-72 xl:w-80 absolute top-[-5%] md:top-[-6%] right-[-8%] md:right-[-12%] origin-top-left rotate-[6.94deg] mix-blend-multiply brightness-[0.85] contrast-125 z-30 pointer-events-none"
                 src="/assets/media__1774962022968.png"
                 alt="TOP SECRET"
               />
@@ -98,10 +111,16 @@ export default function OperatorDossier() {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Right Column */}
-        <div className="w-full flex-1 flex flex-col gap-6 lg:gap-8 lg:col-span-7 xl:col-span-7">
+        <motion.div 
+          initial={{ opacity: 0, x: 30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+          className="w-full flex-1 flex flex-col gap-6 lg:gap-8 lg:col-span-7 xl:col-span-7"
+        >
 
           {/* Main Data Box — dynamic border + shadow */}
           <div
@@ -187,7 +206,7 @@ export default function OperatorDossier() {
             EXTRACT_CV_DATA
           </a>
 
-        </div>
+        </motion.div>
       </div>
     </section>
   );

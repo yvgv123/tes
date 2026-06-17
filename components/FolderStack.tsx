@@ -371,12 +371,16 @@ export default function FolderStack({ onOpenModal }: { onOpenModal: (p: Project)
   const containerH = (CARD_H + GHOST_OVERFLOW) * scale;
 
   return (
-    <section
+    <motion.section
       id="projects"
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
       className="w-full max-w-[95%] lg:max-w-[1600px] mx-auto
                  px-4 sm:px-8 lg:px-[60px]
                  pb-20 lg:pb-28 mt-0 lg:mt-4 pt-0
-                 relative flex flex-col items-center"
+                 relative flex flex-col items-center overflow-hidden sm:overflow-visible"
     >
       {/* ── Section header ── */}
       <div className="w-full h-9 inline-flex justify-start items-center gap-4 mb-12 md:mb-20">
@@ -446,6 +450,6 @@ export default function FolderStack({ onOpenModal }: { onOpenModal: (p: Project)
         >⟵ ⟶</motion.div>
         <span>[ DRAG LEFT OR RIGHT TO CYCLE DOSSIERS ]</span>
       </div>
-    </section>
+    </motion.section>
   );
 }

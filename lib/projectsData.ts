@@ -1,5 +1,10 @@
 // lib/projectsData.ts
 
+export interface CarouselImage {
+  src: string;
+  alt: string;
+}
+
 export interface Project {
   id: string;
   title: string;
@@ -14,6 +19,7 @@ export interface Project {
   detailDesc: string;
   customTitleCss?: string;
   customImgCss?: string;
+  carouselImages?: CarouselImage[];
 }
 
 export const projectsData: Project[] = [
@@ -37,7 +43,7 @@ export const projectsData: Project[] = [
     customImgCss: "position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:1;",
     leftPanelBg: "#0F1F1F",
     status: "RECOVERED", rev: "1.2.0", created: "2025-11-19",
-    author: "SYSTEM_AUTO", type: "Poster",
+    author: "GALIH_R", type: "Poster",
     detailDesc: "Pada poster ini, saya ingin menunjukkan bagaimana tindakan sederhana dari satu jari di smartphone dapat merusak persatuan bangsa, nilai yang jadi inti Pancasila. Di sini, saya menampilkan ilustrasi tangan yang sedang mengetik komentar-komentar kebencian seperti \"J*WIR\", \"SDM RENDAH!\", dan \"J*W* = HAMA!\". Efek dari komentar ini saya visualisasikan dengan retakan parah pada bingkai peta Indonesia di latar belakang. Dengan memadukan visual tersebut, headline \"JEMPOL MENGETIK, BANGSA TERUSIK\", dan pesan \"Saring sebelum sharing\", saya merancang karya ini sebagai peringatan keras bahwa kebiasaan asal ketik di media sosial benar-benar bisa memecah belah negara kita."
   },
   {
@@ -49,7 +55,27 @@ export const projectsData: Project[] = [
     customImgCss: "position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:1;",
     leftPanelBg: "#0F1F1F",
     status: "RECOVERED", rev: "1.4.0", created: "2024-9-25",
-    author: "SYSTEM_AUTO", type: "INTERFACE_CONCEPT",
+    author: "GALIH_R", type: "INTERFACE_CONCEPT",
     detailDesc: "Untuk proyek ini, saya merancang UI/UX aplikasi perpustakaan online 'Labdagati' khusus untuk sebuah lomba. Saya menggunakan palet warna earth-tone agar tampilannya terasa hangat dan terkesan klasik secara visual. Bagian antarmuka saya atur sedemikian rupa supaya navigasinya optimal dan mudah digunakan. Di dalamnya, saya membuat alur login yang efisien, beranda yang rapi untuk berbagai kategori bacaan, serta fitur untuk mengatur buku yang diunduh dan rak buku pribadi. Pada intinya, lewat perpaduan estetika yang minimalis dan fungsi yang intuitif, saya ingin menciptakan ruang baca digital yang modern dan nyaman bagi para penggemar buku."
+  },
+  {
+    id: "ARCHIVE_FILE_04",
+    title: "Lendify<br>Inventory System",
+    customTitleCss: "color:#fff;font-weight:700;font-family:'Space Grotesk',sans-serif;text-transform:uppercase;",
+    desc: "Konsep UI/UX aplikasi desktop sistem manajemen inventaris dan peminjaman alat praktik untuk laboratorium atau gudang sekolah.",
+    image: "/assets/manufaktur_tjkt/Frame 267.png",
+    customImgCss: "position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:1;",
+    leftPanelBg: "#0A0F1A",
+    status: "ENCRYPTED", rev: "1.0.0", created: "2026-6-17", author: "GALIH_R", type: "INTERFACE_CONCEPT",
+    detailDesc: "Saya merancang UI/UX aplikasi desktop Lendify yang merupakan sistem manajemen inventaris dan peminjaman alat praktik untuk laboratorium atau gudang sekolah. Pemilihan palet warna dark mode yang memadukan obsidian black dengan aksen cyber blue sengaja saya terapkan agar tampilannya terasa profesional sekaligus mengurangi kelelahan mata teknisi saat memantau data dalam waktu lama. Pada bagian antarmuka admin, tata letaknya saya susun menggunakan tiga kolom permanen yang dilengkapi Inspector Panel supaya navigasi terasa lebih optimal dan efisien tanpa adanya popup yang mengganggu. Di dalamnya sudah saya siapkan dasbor statistik yang padat informasi serta tabel pelacakan kondisi hardware otomatis, berpadu dengan antarmuka sisi peminjam yang dirancang lebih ramah pengguna. Melalui perpaduan estetika desain yang tegas dan fungsionalitas yang intuitif ini, pada intinya saya ingin menciptakan sebuah sistem pengelolaan aset yang andal serta nyaman digunakan baik oleh teknisi maupun siswa.",
+    carouselImages: [
+      { src: "/assets/manufaktur_tjkt/Frame 267.png", alt: "" },
+      { src: "/assets/manufaktur_tjkt/Halaman Statistik.png", alt: "Halaman Statistik" },
+      { src: "/assets/manufaktur_tjkt/Halaman Management Barang.png", alt: "Halaman Management Barang" },
+      { src: "/assets/manufaktur_tjkt/Halaman Management Kategori.png", alt: "Halaman Management Kategori" },
+      { src: "/assets/manufaktur_tjkt/Halaman Riwayat Peminjaman.png", alt: "Halaman Riwayat Peminjaman" },
+      { src: "/assets/manufaktur_tjkt/Halaman Riwayat Pengembalian.png", alt: "Halaman Riwayat Pengembalian" },
+      { src: "/assets/manufaktur_tjkt/Halaman Utama Peminjam - Lendify.png", alt: "Halaman Utama Peminjam - Lendify" },
+    ],
   }
 ];

@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useState, useRef } from 'react';
 import { useOutlineColor } from '@/lib/OutlineColorContext';
 import ColorWheelPicker from '@/components/ColorWheelPicker';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Navbar() {
   const [menuOpen,   setMenuOpen]   = useState(false);
@@ -33,7 +34,12 @@ export default function Navbar() {
   };
 
   return (
-    <div className="fixed top-0 left-0 w-full pt-4 sm:pt-6 flex justify-center px-4 md:px-8 z-50">
+    <motion.div 
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.8, ease: 'easeOut', delay: 0.2 }}
+      className="fixed top-0 left-0 w-full pt-4 sm:pt-6 flex justify-center px-4 md:px-8 z-50"
+    >
       <nav className="w-full max-w-5xl px-4 md:px-8 py-3 bg-neutral-900/40 rounded-full shadow-[0px_0px_15px_0px_rgba(0,240,255,0.10)] outline outline-1 outline-offset-[-1px] outline-cyan-400/30 backdrop-blur-md flex justify-between items-center gap-4 transition-all">
 
         {/* Left Logo */}
@@ -125,6 +131,6 @@ export default function Navbar() {
           ))}
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }
